@@ -1,6 +1,9 @@
-import { useState } from 'react';
-import { Plus, Trash2 } from 'lucide-react';
+
+import { Plus, Trash2, Download } from 'lucide-react';
 import { getGPAColorClass } from '../utils/gpa';
+import { useLocalStorage } from '../hooks/useLocalStorage';
+import { exportCGPAToPDF } from '../utils/export';
+import { useStore } from '../store/useStore';
 
 type SimpleSemester = {
   id: string;
@@ -10,7 +13,9 @@ type SimpleSemester = {
 }
 
 export const CGPACalculator = () => {
-  const [semesters, setSemesters] = useState<SimpleSemester[]>([
+  const { user } = useStore();
+  const [studentName, setStudentName] = useLocalStorage('draft-cgpa-student-name', '');
+  const [semesters, setSemesters] = useLocalStorage<SimpleSemester[]>('draft-cgpa-semesters', [
     { id: crypto.randomUUID(), name: 'Previous Semesters (Combined)', gpa: '', credits: '' },
     { id: crypto.randomUUID(), name: 'Current Semester', gpa: '', credits: '' },
   ]);
@@ -117,10 +122,36 @@ export const CGPACalculator = () => {
         <Plus size={16} /> <span>Add Another Row</span>
       </button>
 
-      <div className="mt-8 pt-8 border-t border-border/50 flex flex-col items-end relative z-10">
-        <div className="text-sm font-medium text-muted-foreground uppercase tracking-widest mb-2">Overall CGPA</div>
-        <div className={`text-6xl font-black tracking-tighter drop-shadow-sm ${getGPAColorClass(parseFloat(finalCGPA), isResting)}`}>
-          {finalCGPA}
+      <div className="mt-8 pt-8 border-t border-border/50 flex flex-col sm:flex-row justify-between items-start sm:items-end relative z-10 gap-6">
+        <div className="w-full sm:w-auto flex-1 max-w-sm space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-muted-foreground mb-2">Student Name (PDF)</label>
+            <div className="flex gap-2">
+              <input 
+                type="text" 
+                placeholder="e.g. Max"
+                className="w-full bg-background border border-border/50 rounded-lg px-4 py-2 outline-none focus:border-primary transition-all text-white text-sm sm:text-base"
+                value={studentName}
+                onChange={(e) => setStudentName(e.target.value)}
+              />
+              <button 
+                onClick={() => {
+                  exportCGPAToPDF(semesters, studentName || user?.name || 'Guest Student', finalCGPA, totalCredits);
+                }}
+                className="bg-secondary text-secondary-foreground hover:bg-secondary/80 px-4 py-2 rounded-lg font-medium transition-colors whitespace-nowrap flex items-center gap-2"
+                title="Download CGPA Certificate PDF"
+              >
+                <Download size={16} /> <span className="hidden sm:inline">Export PDF</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex flex-col items-end w-full sm:w-auto">
+          <div className="text-sm font-medium text-muted-foreground uppercase tracking-widest mb-2">Overall CGPA</div>
+          <div className={`text-6xl font-black tracking-tighter drop-shadow-sm ${getGPAColorClass(parseFloat(finalCGPA), isResting)}`}>
+            {finalCGPA}
+          </div>
         </div>
       </div>
     </div>

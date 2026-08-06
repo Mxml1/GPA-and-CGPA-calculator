@@ -1,12 +1,15 @@
-import { useState, useMemo } from 'react';
-import { Plus, Trash2, Save } from 'lucide-react';
+import { useMemo } from 'react';
+import { Plus, Trash2, Save, Download } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import type { Subject } from '../store/useStore';
 import { calculateSubjectPoints, calculateGPA, getGPAColorClass } from '../utils/gpa';
+import { exportSemesterToPDF } from '../utils/export';
+import { useLocalStorage } from '../hooks/useLocalStorage';
 
 export const Calculator = ({ initialScaleId }: { initialScaleId?: string }) => {
   const { scales, user, addSemester } = useStore();
-  const [semesterName, setSemesterName] = useState('');
+  const [semesterName, setSemesterName] = useLocalStorage('draft-semester-name', '');
+  const [studentName, setStudentName] = useLocalStorage('draft-student-name', '');
 
   const handleSave = () => {
     if (!user) {
@@ -29,10 +32,10 @@ export const Calculator = ({ initialScaleId }: { initialScaleId?: string }) => {
     setSemesterName('');
   };
   
-  const [selectedScaleId, setSelectedScaleId] = useState(initialScaleId || scales[0].id);
+  const [selectedScaleId, setSelectedScaleId] = useLocalStorage('draft-scale-id', initialScaleId || scales[0].id);
   const activeScale = useMemo(() => scales.find(s => s.id === selectedScaleId) || scales[0], [scales, selectedScaleId]);
 
-  const [subjects, setSubjects] = useState<Subject[]>([
+  const [subjects, setSubjects] = useLocalStorage<Subject[]>('draft-subjects', [
     { id: crypto.randomUUID(), name: '', credits: 3, grade: '', points: 0 },
     { id: crypto.randomUUID(), name: '', credits: 3, grade: '', points: 0 },
     { id: crypto.randomUUID(), name: '', credits: 3, grade: '', points: 0 },
@@ -149,21 +152,51 @@ export const Calculator = ({ initialScaleId }: { initialScaleId?: string }) => {
       </button>
 
       <div className="mt-8 pt-8 border-t border-border/50 flex flex-col sm:flex-row justify-between items-start sm:items-end relative z-10 gap-6">
-        <div className="w-full sm:w-auto flex-1 max-w-sm">
-          <label className="block text-sm font-medium text-muted-foreground mb-2">Save Semester</label>
+        <div className="w-full sm:w-auto flex-1 max-w-md space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-muted-foreground mb-2">Student Name (PDF)</label>
+              <input 
+                type="text" 
+                placeholder="e.g. Max"
+                className="w-full bg-background border border-border/50 rounded-lg px-4 py-2 outline-none focus:border-primary transition-all text-white text-sm sm:text-base"
+                value={studentName}
+                onChange={(e) => setStudentName(e.target.value)}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-muted-foreground mb-2">Semester Name</label>
+              <input 
+                type="text" 
+                placeholder="e.g. Fall 2024"
+                className="w-full bg-background border border-border/50 rounded-lg px-4 py-2 outline-none focus:border-primary transition-all text-white text-sm sm:text-base"
+                value={semesterName}
+                onChange={(e) => setSemesterName(e.target.value)}
+              />
+            </div>
+          </div>
           <div className="flex gap-2">
-            <input 
-              type="text" 
-              placeholder="e.g. Fall 2024"
-              className="flex-1 bg-background border border-border/50 rounded-lg px-4 py-2 outline-none focus:border-primary transition-all text-white text-sm sm:text-base"
-              value={semesterName}
-              onChange={(e) => setSemesterName(e.target.value)}
-            />
             <button 
               onClick={handleSave}
-              className="bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-lg font-medium transition-colors whitespace-nowrap flex items-center gap-2"
+              className="flex-1 justify-center bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-lg font-medium transition-colors whitespace-nowrap flex items-center gap-2"
             >
-              <Save size={16} /> <span className="hidden sm:inline">Save</span>
+              <Save size={16} /> <span>Save Semester</span>
+            </button>
+            <button 
+              onClick={() => {
+                const currentSemester = {
+                  id: 'temp',
+                  name: semesterName || 'Current Semester',
+                  scaleId: selectedScaleId,
+                  subjects: subjects.filter(s => s.name.trim() !== '' || (s.grade || s.marks !== undefined)),
+                  gpa: currentGPA
+                };
+                exportSemesterToPDF(currentSemester, studentName || user?.name || 'Guest Student');
+              }}
+              className="flex-1 justify-center bg-secondary text-secondary-foreground hover:bg-secondary/80 px-4 py-2 rounded-lg font-medium transition-colors whitespace-nowrap flex items-center gap-2"
+              title="Download Semester Certificate PDF"
+            >
+              <Download size={16} /> <span>Export PDF</span>
             </button>
           </div>
         </div>
