@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { BrowserRouter, Routes, Route, Link, Navigate } from 'react-router-dom';
+import { HashRouter, Routes, Route, Link, Navigate } from 'react-router-dom';
 import { Calculator } from './components/Calculator';
 import { CGPACalculator } from './components/CGPACalculator';
 import { Dashboard } from './pages/Dashboard';
@@ -11,7 +11,7 @@ function App() {
   const [activeTab, setActiveTab] = useState<'gpa' | 'cgpa'>('gpa');
 
   return (
-    <BrowserRouter>
+    <HashRouter>
       <div className="min-h-screen bg-background text-foreground font-sans selection:bg-primary/30 flex flex-col">
         {/* Navigation Bar */}
         <header className="border-b border-white/5 bg-card/40 backdrop-blur-xl sticky top-0 z-50">
@@ -108,7 +108,7 @@ function App() {
           </Routes>
         </main>
       </div>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 
