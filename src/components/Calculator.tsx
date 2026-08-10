@@ -5,6 +5,7 @@ import type { Subject } from '../store/useStore';
 import { calculateSubjectPoints, calculateGPA, getGPAColorClass } from '../utils/gpa';
 import { exportSemesterToPDF } from '../utils/export';
 import { useLocalStorage } from '../hooks/useLocalStorage';
+import { ContributionBars } from './ContributionBars';
 
 export const Calculator = ({ initialScaleId }: { initialScaleId?: string }) => {
   const { scales, user, addSemester } = useStore();
@@ -150,6 +151,10 @@ export const Calculator = ({ initialScaleId }: { initialScaleId?: string }) => {
       >
         <Plus size={16} /> <span>Add Another Course</span>
       </button>
+
+      <div className="relative z-10">
+        <ContributionBars subjects={subjects} />
+      </div>
 
       <div className="mt-8 pt-8 border-t border-border/50 flex flex-col sm:flex-row justify-between items-start sm:items-end relative z-10 gap-6">
         <div className="w-full sm:w-auto flex-1 max-w-md space-y-4">
