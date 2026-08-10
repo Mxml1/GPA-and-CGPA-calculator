@@ -194,7 +194,7 @@ export const ContributionBars: React.FC<ContributionBarsProps> = ({ subjects }) 
             </span>
           </div>
 
-          <div className="w-full h-12 bg-background border border-border/30 rounded-xl overflow-hidden flex drop-shadow-sm">
+          <div className="w-full h-12 bg-background border border-border/30 rounded-2xl overflow-hidden flex drop-shadow-sm">
             {validSubjects.map((sub, index) => {
               const widthPercentage = (sub.credits / totalCH) * 100;
               const color = COLORS[index % COLORS.length];
@@ -224,7 +224,7 @@ export const ContributionBars: React.FC<ContributionBarsProps> = ({ subjects }) 
             </span>
           </div>
 
-          <div className="w-full h-12 bg-background border border-border/30 rounded-xl overflow-hidden flex drop-shadow-sm">
+          <div className="w-full h-12 bg-background border border-border/30 rounded-2xl overflow-hidden flex drop-shadow-sm">
             {validSubjects.map((sub, index) => {
               const widthPercentage = (sub.credits / totalCH) * 100;
               const hasResult = Boolean(sub.grade) || sub.marks !== undefined;
