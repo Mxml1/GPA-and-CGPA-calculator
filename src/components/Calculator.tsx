@@ -173,7 +173,7 @@ export const Calculator = ({ initialScaleId }: { initialScaleId?: string }) => {
               <label className="block text-sm font-medium text-muted-foreground mb-2">Semester Name</label>
               <input 
                 type="text" 
-                placeholder="e.g. Fall 2024"
+                placeholder="e.g. Fall 2025"
                 className="w-full bg-background border border-border/50 rounded-lg px-4 py-2 outline-none focus:border-primary transition-all text-white text-sm sm:text-base"
                 value={semesterName}
                 onChange={(e) => setSemesterName(e.target.value)}

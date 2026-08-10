@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import type { Subject } from '../store/useStore';
 
-// Muted, distinct dashboard colors. A subject keeps the same color in both bars.
+
 const COLORS = [
   '#3B82F6', // blue
-  '#10B981', // emerald
   '#8B5CF6', // violet
+  '#10B981', // emerald
   '#F59E0B', // amber
   '#F43F5E', // rose
   '#06B6D4', // cyan
