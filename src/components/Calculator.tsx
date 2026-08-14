@@ -65,11 +65,11 @@ export const Calculator = ({ initialScaleId }: { initialScaleId?: string }) => {
   const isResting = currentGPA === 0 && subjects.every(s => s.points === 0 && !s.grade && s.marks === undefined);
 
   return (
-    <div className="bg-card border border-border/50 rounded-2xl shadow-2xl shadow-black/50 overflow-hidden p-6 sm:p-8 mt-8 backdrop-blur-sm relative group">
+    <div className="bg-card border border-border/50 rounded-2xl shadow-2xl shadow-black/5 dark:shadow-black/50 overflow-hidden p-6 sm:p-8 mt-8 backdrop-blur-sm relative group">
       <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent pointer-events-none rounded-2xl"></div>
       
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 relative z-10">
-        <h3 className="text-xl font-bold tracking-tight text-white mb-4 sm:mb-0">Semester Grades</h3>
+        <h3 className="text-xl font-bold tracking-tight text-foreground mb-4 sm:mb-0">Semester Grades</h3>
         <select 
           className="bg-secondary text-secondary-foreground border border-border rounded-lg px-4 py-2 focus:ring-2 ring-primary outline-none text-sm appearance-none cursor-pointer hover:bg-secondary/80 transition-colors"
           value={selectedScaleId}
@@ -93,7 +93,7 @@ export const Calculator = ({ initialScaleId }: { initialScaleId?: string }) => {
               <input 
                 type="text" 
                 placeholder={`Course ${index + 1}`}
-                className="w-full bg-background border border-border/50 rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all text-sm sm:text-base text-white placeholder:text-muted-foreground"
+                className="w-full bg-background border border-border/50 rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all text-sm sm:text-base text-foreground placeholder:text-muted-foreground"
                 value={sub.name}
                 onChange={(e) => handleSubjectChange(sub.id, 'name', e.target.value)}
               />
@@ -103,7 +103,7 @@ export const Calculator = ({ initialScaleId }: { initialScaleId?: string }) => {
                 type="number" 
                 min="0"
                 step="0.5"
-                className="w-full bg-background border border-border/50 rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all text-sm sm:text-base text-white"
+                className="w-full bg-background border border-border/50 rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all text-sm sm:text-base text-foreground"
                 value={sub.credits}
                 onChange={(e) => handleSubjectChange(sub.id, 'credits', parseFloat(e.target.value) || 0)}
               />
@@ -111,7 +111,7 @@ export const Calculator = ({ initialScaleId }: { initialScaleId?: string }) => {
             <div className="col-span-3">
               {activeScale.type === 'grade' ? (
                 <select
-                  className="w-full bg-background border border-border/50 rounded-lg px-2 sm:px-4 py-2 sm:py-2.5 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all appearance-none text-sm sm:text-base text-white"
+                  className="w-full bg-background border border-border/50 rounded-lg px-2 sm:px-4 py-2 sm:py-2.5 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all appearance-none text-sm sm:text-base text-foreground"
                   value={sub.grade}
                   onChange={(e) => handleSubjectChange(sub.id, 'grade', e.target.value)}
                 >
@@ -125,7 +125,7 @@ export const Calculator = ({ initialScaleId }: { initialScaleId?: string }) => {
                   type="number" 
                   min="0"
                   max="100"
-                  className="w-full bg-background border border-border/50 rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all text-sm sm:text-base text-white"
+                  className="w-full bg-background border border-border/50 rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all text-sm sm:text-base text-foreground"
                   value={sub.marks || ''}
                   onChange={(e) => handleSubjectChange(sub.id, 'marks', parseFloat(e.target.value))}
                   placeholder="e.g. 85"
@@ -164,7 +164,7 @@ export const Calculator = ({ initialScaleId }: { initialScaleId?: string }) => {
               <input 
                 type="text" 
                 placeholder="e.g. Max"
-                className="w-full bg-background border border-border/50 rounded-lg px-4 py-2 outline-none focus:border-primary transition-all text-white text-sm sm:text-base"
+                className="w-full bg-background border border-border/50 rounded-lg px-4 py-2 outline-none focus:border-primary transition-all text-foreground text-sm sm:text-base"
                 value={studentName}
                 onChange={(e) => setStudentName(e.target.value)}
               />
@@ -174,7 +174,7 @@ export const Calculator = ({ initialScaleId }: { initialScaleId?: string }) => {
               <input 
                 type="text" 
                 placeholder="e.g. Fall 2025"
-                className="w-full bg-background border border-border/50 rounded-lg px-4 py-2 outline-none focus:border-primary transition-all text-white text-sm sm:text-base"
+                className="w-full bg-background border border-border/50 rounded-lg px-4 py-2 outline-none focus:border-primary transition-all text-foreground text-sm sm:text-base"
                 value={semesterName}
                 onChange={(e) => setSemesterName(e.target.value)}
               />

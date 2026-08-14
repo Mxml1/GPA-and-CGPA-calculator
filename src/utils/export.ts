@@ -10,7 +10,7 @@ export const exportToPDF = (semesters: Semester[], user: User) => {
   doc.setFontSize(22);
   doc.setTextColor(40, 40, 40);
   doc.text('Academic Transcript', 14, 22);
-  
+    
   // User Info
   doc.setFontSize(11);
   doc.setTextColor(100, 100, 100);
@@ -98,7 +98,7 @@ export const exportSemesterToPDF = (semester: Semester, studentName: string = 'G
     head: [['Course', 'Credits', 'Grade/Marks', 'Points']],
     body: tableData,
     theme: 'grid',
-    headStyles: { fillColor: [139, 92, 246] }, // Violet-500
+    headStyles: { fillColor: [42, 181, 212] }, 
     margin: { left: 14 }
   });
   

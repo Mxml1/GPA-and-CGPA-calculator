@@ -34,10 +34,10 @@ export const ForecastingModal = ({ isOpen, onClose }: { isOpen: boolean, onClose
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary to-primary"></div>
         <div className="p-6">
           <div className="flex justify-between items-center mb-6">
-            <h3 className="text-xl font-bold text-white flex items-center gap-2">
+            <h3 className="text-xl font-bold text-foreground flex items-center gap-2">
               <Target size={20} className="text-primary" /> GPA Forecaster
             </h3>
-            <button onClick={onClose} className="text-muted-foreground hover:text-white transition-colors">
+            <button onClick={onClose} className="text-muted-foreground hover:text-foreground transition-colors">
               <X size={20} />
             </button>
           </div>
@@ -46,11 +46,11 @@ export const ForecastingModal = ({ isOpen, onClose }: { isOpen: boolean, onClose
             <div className="grid grid-cols-2 gap-4 bg-secondary/50 p-4 rounded-xl">
               <div>
                 <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Current CGPA</p>
-                <p className="text-2xl font-bold text-white">{currentCGPA.toFixed(2)}</p>
+                <p className="text-2xl font-bold text-foreground">{currentCGPA.toFixed(2)}</p>
               </div>
               <div>
                 <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Total Credits</p>
-                <p className="text-2xl font-bold text-white">{totalCredits}</p>
+                <p className="text-2xl font-bold text-foreground">{totalCredits}</p>
               </div>
             </div>
             
@@ -60,7 +60,7 @@ export const ForecastingModal = ({ isOpen, onClose }: { isOpen: boolean, onClose
                 type="number" 
                 step="0.01"
                 placeholder="e.g. 3.5"
-                className="w-full bg-background border border-border/50 rounded-lg px-4 py-3 outline-none focus:border-primary transition-colors text-white"
+                className="w-full bg-background border border-border/50 rounded-lg px-4 py-3 outline-none focus:border-primary transition-colors text-foreground"
                 value={targetCGPA}
                 onChange={(e) => setTargetCGPA(parseFloat(e.target.value) || '')}
               />
@@ -72,7 +72,7 @@ export const ForecastingModal = ({ isOpen, onClose }: { isOpen: boolean, onClose
                 type="number" 
                 step="1"
                 placeholder="e.g. 15"
-                className="w-full bg-background border border-border/50 rounded-lg px-4 py-3 outline-none focus:border-primary transition-colors text-white"
+                className="w-full bg-background border border-border/50 rounded-lg px-4 py-3 outline-none focus:border-primary transition-colors text-foreground"
                 value={nextCredits}
                 onChange={(e) => setNextCredits(parseFloat(e.target.value) || '')}
               />
@@ -81,7 +81,7 @@ export const ForecastingModal = ({ isOpen, onClose }: { isOpen: boolean, onClose
           
           <div className="bg-primary/10 border border-primary/20 rounded-xl p-5 text-center mt-6">
             <p className="text-sm text-primary font-medium mb-1 uppercase tracking-wider">Required GPA</p>
-            <div className="text-5xl font-black text-white flex items-center justify-center gap-3">
+            <div className="text-5xl font-black text-foreground flex items-center justify-center gap-3">
               {requiredGPA !== null ? requiredGPA.toFixed(2) : '-.--'}
             </div>
             {message && (

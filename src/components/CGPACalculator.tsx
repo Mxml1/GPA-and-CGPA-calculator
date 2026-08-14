@@ -50,11 +50,11 @@ export const CGPACalculator = () => {
   const isResting = totalCredits === 0;
 
   return (
-    <div className="bg-card border border-border/50 rounded-2xl shadow-2xl shadow-black/50 overflow-hidden p-6 sm:p-8 mt-8 backdrop-blur-sm relative group fade-in">
+    <div className="bg-card border border-border/50 rounded-2xl shadow-2xl shadow-black/5 dark:shadow-black/50 overflow-hidden p-6 sm:p-8 mt-8 backdrop-blur-sm relative group fade-in">
       <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent pointer-events-none rounded-2xl"></div>
       
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 relative z-10">
-        <h3 className="text-xl font-bold tracking-tight text-white mb-4 sm:mb-0">Calculate Cumulative GPA</h3>
+        <h3 className="text-xl font-bold tracking-tight text-foreground mb-4 sm:mb-0">Calculate Cumulative GPA</h3>
         <p className="text-sm text-muted-foreground max-w-sm text-right">
           Enter your previous overall CGPA & Credits, followed by your new semester's GPA & Credits.
         </p>
@@ -74,7 +74,7 @@ export const CGPACalculator = () => {
               <input 
                 type="text" 
                 placeholder={`Semester ${index + 1}`}
-                className="w-full bg-background border border-border/50 rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all text-sm sm:text-base text-white placeholder:text-muted-foreground"
+                className="w-full bg-background border border-border/50 rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all text-sm sm:text-base text-foreground placeholder:text-muted-foreground"
                 value={sem.name}
                 onChange={(e) => handleChange(sem.id, 'name', e.target.value)}
               />
@@ -85,7 +85,7 @@ export const CGPACalculator = () => {
                 min="0"
                 step="0.5"
                 placeholder="e.g. 15"
-                className="w-full bg-background border border-border/50 rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all text-sm sm:text-base text-white"
+                className="w-full bg-background border border-border/50 rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all text-sm sm:text-base text-foreground"
                 value={sem.credits}
                 onChange={(e) => handleChange(sem.id, 'credits', parseFloat(e.target.value) || '')}
               />
@@ -97,7 +97,7 @@ export const CGPACalculator = () => {
                 max="4.0"
                 step="0.01"
                 placeholder="e.g. 3.5"
-                className="w-full bg-background border border-border/50 rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all text-sm sm:text-base text-white"
+                className="w-full bg-background border border-border/50 rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all text-sm sm:text-base text-foreground"
                 value={sem.gpa}
                 onChange={(e) => handleChange(sem.id, 'gpa', parseFloat(e.target.value) || '')}
               />
@@ -117,7 +117,7 @@ export const CGPACalculator = () => {
 
       <button 
         onClick={handleAddSemester}
-        className="mt-6 flex items-center space-x-2 text-sm text-primary hover:text-white hover:bg-primary px-4 py-2 rounded-lg font-medium transition-all duration-300 relative z-10 border border-primary/20"
+        className="mt-6 flex items-center space-x-2 text-sm text-primary hover:text-primary-foreground hover:bg-primary px-4 py-2 rounded-lg font-medium transition-all duration-300 relative z-10 border border-primary/20"
       >
         <Plus size={16} /> <span>Add Another Row</span>
       </button>
@@ -130,7 +130,7 @@ export const CGPACalculator = () => {
               <input 
                 type="text" 
                 placeholder="e.g. Max"
-                className="w-full bg-background border border-border/50 rounded-lg px-4 py-2 outline-none focus:border-primary transition-all text-white text-sm sm:text-base"
+                className="w-full bg-background border border-border/50 rounded-lg px-4 py-2 outline-none focus:border-primary transition-all text-foreground text-sm sm:text-base"
                 value={studentName}
                 onChange={(e) => setStudentName(e.target.value)}
               />

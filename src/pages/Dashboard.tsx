@@ -28,18 +28,18 @@ export const Dashboard = () => {
     <div className="space-y-8 fade-in">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight text-white mb-2">Welcome back, {user?.name}</h2>
+          <h2 className="text-3xl font-bold tracking-tight text-foreground mb-2">Welcome back, {user?.name}</h2>
           <p className="text-muted-foreground">Track your academic progress and forecast your future.</p>
         </div>
         <div className="flex space-x-3 mt-4 sm:mt-0">
           <button 
-            className="flex items-center space-x-2 bg-secondary hover:bg-secondary/80 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+            className="flex items-center space-x-2 bg-secondary hover:bg-secondary/80 text-secondary-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors"
             onClick={() => setIsForecastOpen(true)}
           >
             <TrendingUp size={16} /> <span>Forecast</span>
           </button>
           <button 
-            className="flex items-center space-x-2 bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+            className="flex items-center space-x-2 bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors"
             onClick={() => exportToPDF(semesters, user!)}
           >
             <Download size={16} /> <span>Export PDF</span>
@@ -61,17 +61,17 @@ export const Dashboard = () => {
             <FileText size={80} />
           </div>
           <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider mb-2">Total Credits</p>
-          <p className="text-5xl font-black text-white">{totalCredits}</p>
+          <p className="text-5xl font-black text-foreground">{totalCredits}</p>
         </div>
 
         <div className="bg-card border border-border/50 p-6 rounded-2xl shadow-lg relative overflow-hidden group flex flex-col justify-center items-center cursor-pointer hover:bg-card/80 transition-colors border-dashed border-2">
           <Settings className="text-muted-foreground mb-3 group-hover:text-primary transition-colors" size={32} />
-          <p className="text-sm font-medium text-white group-hover:text-primary transition-colors">Manage Grading Scales</p>
+          <p className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">Manage Grading Scales</p>
         </div>
       </div>
 
       <div className="bg-card border border-border/50 rounded-2xl p-6 shadow-lg">
-        <h3 className="text-xl font-bold text-white mb-6">Performance Trend</h3>
+        <h3 className="text-xl font-bold text-foreground mb-6">Performance Trend</h3>
         <div className="h-[300px] w-full">
           {semesters.length > 0 ? (
             <ResponsiveContainer width="100%" height="100%">
@@ -80,8 +80,8 @@ export const Dashboard = () => {
                 <XAxis dataKey="name" stroke="#888" tickLine={false} axisLine={false} />
                 <YAxis domain={['auto', 'auto']} stroke="#888" tickLine={false} axisLine={false} />
                 <Tooltip 
-                  contentStyle={{ backgroundColor: '#111', borderColor: '#333', borderRadius: '8px' }}
-                  itemStyle={{ color: '#fff' }}
+                  contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))', borderRadius: '8px' }}
+                  itemStyle={{ color: 'hsl(var(--foreground))' }}
                 />
                 <Line type="monotone" dataKey="cgpa" stroke="#8b5cf6" strokeWidth={3} dot={{ r: 4, fill: '#8b5cf6' }} activeDot={{ r: 6 }} name="CGPA" />
                 <Line type="monotone" dataKey="gpa" stroke="#6b7280" strokeWidth={2} strokeDasharray="5 5" dot={false} name="Semester GPA" />
@@ -99,7 +99,7 @@ export const Dashboard = () => {
       
       <div>
         <div className="flex justify-between items-center mb-6">
-          <h3 className="text-xl font-bold text-white">Semesters</h3>
+          <h3 className="text-xl font-bold text-foreground">Semesters</h3>
           <Link to="/" className="flex items-center space-x-2 text-sm text-primary hover:text-primary-foreground hover:bg-primary px-4 py-2 rounded-lg font-medium transition-colors border border-primary/20 bg-primary/5">
             <Plus size={16} /> <span>Add Semester</span>
           </Link>
@@ -114,7 +114,7 @@ export const Dashboard = () => {
              {semesters.map(sem => (
                <div key={sem.id} className="bg-card border border-border/50 rounded-xl p-5 hover:border-primary/50 transition-colors group cursor-pointer shadow-md">
                  <div className="flex justify-between items-start mb-4">
-                   <h4 className="font-bold text-white text-lg">{sem.name}</h4>
+                   <h4 className="font-bold text-foreground text-lg">{sem.name}</h4>
                    <div className={`bg-secondary px-2.5 py-1 rounded-md font-bold text-sm border border-border ${getGPATextColorClass(sem.gpa, false)}`}>
                      {sem.gpa.toFixed(2)}
                    </div>
