@@ -5,8 +5,22 @@
     <link rel="icon" type="image/svg+xml" href="/GPA-and-CGPA-calculator/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>UNIGRADE</title>
-    <script type="module" crossorigin src="/GPA-and-CGPA-calculator/assets/index-C66Y-jFb.js"></script>
-    <link rel="stylesheet" crossorigin href="/GPA-and-CGPA-calculator/assets/index-y8SBQK1H.css">
+    <script>
+      (function() {
+        try {
+          const theme = localStorage.getItem('theme') || 'system';
+          const root = document.documentElement;
+          root.classList.remove('light', 'dark');
+          let resolved = theme;
+          if (theme === 'system') {
+            resolved = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          }
+          root.classList.add(resolved);
+        } catch (e) {}
+      })();
+    </script>
+    <script type="module" crossorigin src="/GPA-and-CGPA-calculator/assets/index-D4jl6Qts.js"></script>
+    <link rel="stylesheet" crossorigin href="/GPA-and-CGPA-calculator/assets/index-DLKMHxsx.css">
   </head>
   <body>
     <div id="root"></div>
