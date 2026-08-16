@@ -26,7 +26,60 @@ interface TooltipPosition {
   top: number;
 }
 
+type ViewMode = 'bars' | 'pie';
+
+const MAX_GP = 4;
+
+const clamp = (value: number, min: number, max: number) =>
+  Math.min(Math.max(value, min), max);
+
+const hexToRgba = (hex: string, alpha: number) => {
+  const clean = hex.replace('#', '');
+  const value = parseInt(clean, 16);
+  const r = (value >> 16) & 255;
+  const g = (value >> 8) & 255;
+  const b = value & 255;
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+};
+
+const polarToCartesian = (
+  center: number,
+  radius: number,
+  angleInDegrees: number
+) => {
+  const angle = ((angleInDegrees - 90) * Math.PI) / 180;
+
+  return {
+    x: center + radius * Math.cos(angle),
+    y: center + radius * Math.sin(angle),
+  };
+};
+
+const describeDonutSegment = (
+  center: number,
+  outerRadius: number,
+  innerRadius: number,
+  startAngle: number,
+  endAngle: number
+) => {
+  const outerStart = polarToCartesian(center, outerRadius, endAngle);
+  const outerEnd = polarToCartesian(center, outerRadius, startAngle);
+  const innerStart = polarToCartesian(center, innerRadius, startAngle);
+  const innerEnd = polarToCartesian(center, innerRadius, endAngle);
+
+  const largeArcFlag = endAngle - startAngle > 180 ? 1 : 0;
+
+  return [
+    `M ${outerStart.x} ${outerStart.y}`,
+    `A ${outerRadius} ${outerRadius} 0 ${largeArcFlag} 0 ${outerEnd.x} ${outerEnd.y}`,
+    `L ${innerStart.x} ${innerStart.y}`,
+    `A ${innerRadius} ${innerRadius} 0 ${largeArcFlag} 1 ${innerEnd.x} ${innerEnd.y}`,
+    'Z',
+  ].join(' ');
+};
+
 export const ContributionBars: React.FC<ContributionBarsProps> = ({ subjects }) => {
+  const [viewMode, setViewMode] = useState<ViewMode>('bars');
   const [hoveredSubject, setHoveredSubject] = useState<string | null>(null);
   const [hoveredBar, setHoveredBar] = useState<HoveredBar>(null);
   const [tooltipPosition, setTooltipPosition] = useState<TooltipPosition | null>(null);
@@ -37,18 +90,24 @@ export const ContributionBars: React.FC<ContributionBarsProps> = ({ subjects }) 
   );
   const totalCH = validSubjects.reduce((sum, subject) => sum + subject.credits, 0);
 
+  const totalAchievedPoints = validSubjects.reduce(
+    (sum, subject) => sum + clamp(subject.points, 0, MAX_GP) * subject.credits,
+    0
+  );
+  const actualGPA = totalCH > 0 ? totalAchievedPoints / totalCH : 0;
+
   const clearTooltip = () => {
     setHoveredSubject(null);
     setHoveredBar(null);
     setTooltipPosition(null);
   };
 
-  const handleSegmentEnter = (
-    subject: Subject,
-    bar: Exclude<HoveredBar, null>,
-    element: HTMLDivElement
-  ) => {
-    const rect = element.getBoundingClientRect();
+    const handleSegmentEnter = (
+  subject: Subject,
+  bar: Exclude<HoveredBar, null>,
+  element: Element
+    ) => {
+      const rect = element.getBoundingClientRect();
 
     setHoveredSubject(subject.id);
     setHoveredBar(bar);
@@ -65,13 +124,6 @@ export const ContributionBars: React.FC<ContributionBarsProps> = ({ subjects }) 
       </div>
     );
   }
-
-  // Keep the existing GPA calculation/data model as the source of truth.
-  const totalAchievedPoints = validSubjects.reduce(
-    (sum, subject) => sum + subject.points * subject.credits,
-    0
-  );
-  const actualGPA = totalAchievedPoints / totalCH;
 
   const hoveredSubjectData = hoveredSubject
     ? validSubjects.find((subject) => subject.id === hoveredSubject) ?? null
@@ -96,6 +148,123 @@ export const ContributionBars: React.FC<ContributionBarsProps> = ({ subjects }) 
   const hoveredAchievement = hoveredSubjectData && hasActualResult
     ? Math.min(Math.max((hoveredSubjectData.points / 4) * 100, 0), 100)
     : 0;
+
+  const renderPieChart = (mode: 'max' | 'actual') => {
+    const size = 320;
+    const center = size / 2;
+    const outerRadius = 132;
+    const innerRadius = 82;
+
+    let currentAngle = 0;
+
+    return (
+      <div className="relative mx-auto w-full max-w-[320px] aspect-square">
+        <svg
+          viewBox={`0 0 ${size} ${size}`}
+          className="h-full w-full overflow-visible"
+          role="img"
+          aria-label={
+            mode === 'max'
+              ? 'Maximum 4.00 GPA contribution pie chart'
+              : 'Actual GPA contribution pie chart'
+          }
+        >
+          {validSubjects.map((sub, index) => {
+            const color = COLORS[index % COLORS.length];
+            const sliceAngle = (sub.credits / totalCH) * 360;
+            const startAngle = currentAngle;
+            const endAngle = currentAngle + sliceAngle;
+            const hasResult = Boolean(sub.grade) || sub.marks !== undefined;
+            const achievement = hasResult
+              ? clamp(sub.points / MAX_GP, 0, 1)
+              : 0;
+
+            currentAngle = endAngle;
+
+            const fullPath = describeDonutSegment(
+              center,
+              outerRadius,
+              innerRadius,
+              startAngle,
+              endAngle
+            );
+
+            const achievedEndAngle =
+              startAngle + sliceAngle * achievement;
+
+            const achievedPath =
+              achievement > 0
+                ? describeDonutSegment(
+                    center,
+                    outerRadius,
+                    innerRadius,
+                    startAngle,
+                    achievedEndAngle
+                  )
+                : '';
+
+            return (
+              <g key={sub.id}>
+                <path
+                  d={fullPath}
+                  fill={
+                    mode === 'max'
+                      ? color
+                      : hexToRgba(color, 0.2)
+                  }
+                  stroke="rgba(15, 23, 42, 0.95)"
+                  strokeWidth="2"
+                  className="cursor-help transition-[filter] duration-200 hover:brightness-110"
+                  onMouseEnter={(event) =>
+                    handleSegmentEnter(sub, mode, event.currentTarget)
+                  }
+                  aria-label={`${sub.name}, ${sub.credits} credit hours, ${(
+                    (sub.credits / totalCH) *
+                    100
+                  ).toFixed(2)} percent contribution`}
+                />
+
+                {mode === 'actual' && achievement > 0 && (
+                  <path
+                    d={achievedPath}
+                    fill={color}
+                    stroke="rgba(15, 23, 42, 0.95)"
+                    strokeWidth="2"
+                    className="pointer-events-none"
+                  />
+                )}
+              </g>
+            );
+          })}
+
+          <circle
+            cx={center}
+            cy={center}
+            r={innerRadius - 1}
+            className="fill-card"
+          />
+
+          <text
+            x={center}
+            y={center - 8}
+            textAnchor="middle"
+            className="fill-muted-foreground text-[10px] font-semibold uppercase tracking-[0.16em]"
+          >
+            {mode === 'max' ? 'Maximum' : 'Your GPA'}
+          </text>
+
+          <text
+            x={center}
+            y={center + 24}
+            textAnchor="middle"
+            className="fill-white text-[26px] font-black"
+          >
+            {mode === 'max' ? '4.00' : actualGPA.toFixed(2)}
+          </text>
+        </svg>
+      </div>
+    );
+  };
 
   return (
     <div
@@ -182,6 +351,49 @@ export const ContributionBars: React.FC<ContributionBarsProps> = ({ subjects }) 
         </div>
       </div>
 
+      {/* Visualization switcher */}
+      <div className="mb-8 flex justify-center">
+        <div
+          className="inline-flex rounded-lg border border-border/50 bg-background/70 p-1"
+          role="tablist"
+          aria-label="Contribution visualization"
+        >
+          <button
+            type="button"
+            role="tab"
+            aria-selected={viewMode === 'bars'}
+            onClick={() => {
+              setViewMode('bars');
+              clearTooltip();
+            }}
+            className={`rounded-md px-4 py-2 text-xs font-semibold transition-all ${
+              viewMode === 'bars'
+                ? 'bg-secondary text-white shadow-sm'
+                : 'text-muted-foreground hover:text-white'
+            }`}
+          >
+            Contribution Bars
+          </button>
+
+          <button
+            type="button"
+            role="tab"
+            aria-selected={viewMode === 'pie'}
+            onClick={() => {
+              setViewMode('pie');
+              clearTooltip();
+            }}
+            className={`rounded-md px-4 py-2 text-xs font-semibold transition-all ${
+              viewMode === 'pie'
+                ? 'bg-secondary text-white shadow-sm'
+                : 'text-muted-foreground hover:text-white'
+            }`}
+          >
+            Pie Charts
+          </button>
+        </div>
+      </div>
+
       <div className="space-y-8">
         {/* Maximum Potential Bar */}
         <div>
@@ -194,23 +406,27 @@ export const ContributionBars: React.FC<ContributionBarsProps> = ({ subjects }) 
             </span>
           </div>
 
-          <div className="w-full h-12 bg-background border border-border/30 rounded-xl overflow-hidden flex drop-shadow-sm">
-            {validSubjects.map((sub, index) => {
-              const widthPercentage = (sub.credits / totalCH) * 100;
-              const color = COLORS[index % COLORS.length];
+          {viewMode === 'bars' ? (
+            <div className="w-full h-12 bg-background border border-border/30 rounded-xl overflow-hidden flex drop-shadow-sm">
+              {validSubjects.map((sub, index) => {
+                const widthPercentage = (sub.credits / totalCH) * 100;
+                const color = COLORS[index % COLORS.length];
 
-              return (
-                <div
-                  key={sub.id}
-                  role="img"
-                  aria-label={`${sub.name}, ${sub.credits} credit hours, ${widthPercentage.toFixed(2)} percent contribution, maximum grade point 4.00`}
-                  className="h-full relative shrink-0 cursor-help border-r border-background/20 last:border-r-0 transition-[filter] duration-200 hover:brightness-110"
-                  style={{ width: `${widthPercentage}%`, backgroundColor: color }}
-                  onMouseEnter={(event) => handleSegmentEnter(sub, 'max', event.currentTarget)}
-                />
-              );
-            })}
-          </div>
+                return (
+                  <div
+                    key={sub.id}
+                    role="img"
+                    aria-label={`${sub.name}, ${sub.credits} credit hours, ${widthPercentage.toFixed(2)} percent contribution, maximum grade point 4.00`}
+                    className="h-full relative shrink-0 cursor-help border-r border-background/20 last:border-r-0 transition-[filter] duration-200 hover:brightness-110"
+                    style={{ width: `${widthPercentage}%`, backgroundColor: color }}
+                    onMouseEnter={(event) => handleSegmentEnter(sub, 'max', event.currentTarget)}
+                  />
+                );
+              })}
+            </div>
+          ) : (
+            renderPieChart('max')
+          )}
         </div>
 
         {/* Actual Achievement Bar */}
@@ -224,38 +440,41 @@ export const ContributionBars: React.FC<ContributionBarsProps> = ({ subjects }) 
             </span>
           </div>
 
-          <div className="w-full h-12 bg-background border border-border/30 rounded-xl overflow-hidden flex drop-shadow-sm">
-            {validSubjects.map((sub, index) => {
-              const widthPercentage = (sub.credits / totalCH) * 100;
-              const hasResult = Boolean(sub.grade) || sub.marks !== undefined;
-              const achievedPercentage = hasResult
-                ? Math.min(Math.max((sub.points / 4) * 100, 0), 100)
-                : 0;
-              const color = COLORS[index % COLORS.length];
+          {viewMode === 'bars' ? (
+            <div className="w-full h-12 bg-background border border-border/30 rounded-xl overflow-hidden flex drop-shadow-sm">
+              {validSubjects.map((sub, index) => {
+                const widthPercentage = (sub.credits / totalCH) * 100;
+                const hasResult = Boolean(sub.grade) || sub.marks !== undefined;
+                const achievedPercentage = hasResult
+                  ? clamp((sub.points / 4) * 100, 0, 100)
+                  : 0;
+                const color = COLORS[index % COLORS.length];
 
-              return (
-                <div
-                  key={sub.id}
-                  role="img"
-                  aria-label={`${sub.name}, ${sub.credits} credit hours, ${widthPercentage.toFixed(2)} percent contribution, ${achievedPercentage.toFixed(0)} percent achieved`}
-                  className="h-full relative shrink-0 cursor-help border-r border-background/20 last:border-r-0 transition-[filter] duration-200 hover:brightness-110"
-                  style={{ width: `${widthPercentage}%` }}
-                  onMouseEnter={(event) => handleSegmentEnter(sub, 'actual', event.currentTarget)}
-                >
-                  {/* The complete segment remains CH-sized. Only achievement changes. */}
+                return (
                   <div
-                    className="absolute inset-0"
-                    style={{ backgroundColor: color, opacity: 0.2 }}
-                  />
+                    key={sub.id}
+                    role="img"
+                    aria-label={`${sub.name}, ${sub.credits} credit hours, ${widthPercentage.toFixed(2)} percent contribution, ${achievedPercentage.toFixed(0)} percent achieved`}
+                    className="h-full relative shrink-0 cursor-help border-r border-background/20 last:border-r-0 transition-[filter] duration-200 hover:brightness-110"
+                    style={{ width: `${widthPercentage}%` }}
+                    onMouseEnter={(event) => handleSegmentEnter(sub, 'actual', event.currentTarget)}
+                  >
+                    <div
+                      className="absolute inset-0"
+                      style={{ backgroundColor: color, opacity: 0.2 }}
+                    />
 
-                  <div
-                    className="absolute inset-y-0 left-0 transition-[width] duration-700 ease-out"
-                    style={{ width: `${achievedPercentage}%`, backgroundColor: color }}
-                  />
-                </div>
-              );
-            })}
-          </div>
+                    <div
+                      className="absolute inset-y-0 left-0 transition-[width] duration-700 ease-out"
+                      style={{ width: `${achievedPercentage}%`, backgroundColor: color }}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            renderPieChart('actual')
+          )}
         </div>
 
         {/* Subject Legend */}
