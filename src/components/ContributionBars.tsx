@@ -7,12 +7,13 @@ const COLORS = [
   '#8B5CF6', // violet
   '#10B981', // emerald
   '#F59E0B', // amber
-  '#F43F5E', // rose
   '#06B6D4', // cyan
-  '#EC4899', // pink
+  '#F43F5E', // rose
   '#84CC16', // lime
-  '#6366F1', // indigo
   '#14B8A6', // teal
+   '#EC4899', // pink
+  '#6366F1', // indigo
+  
 ];
 
 interface ContributionBarsProps {
@@ -102,12 +103,12 @@ export const ContributionBars: React.FC<ContributionBarsProps> = ({ subjects }) 
     setTooltipPosition(null);
   };
 
-    const handleSegmentEnter = (
-  subject: Subject,
-  bar: Exclude<HoveredBar, null>,
-  element: Element
-    ) => {
-      const rect = element.getBoundingClientRect();
+  const handleSegmentEnter = (
+    subject: Subject,
+    bar: Exclude<HoveredBar, null>,
+    element: Element
+  ) => {
+    const rect = element.getBoundingClientRect();
 
     setHoveredSubject(subject.id);
     setHoveredBar(bar);
@@ -395,88 +396,110 @@ export const ContributionBars: React.FC<ContributionBarsProps> = ({ subjects }) 
       </div>
 
       <div className="space-y-8">
-        {/* Maximum Potential Bar */}
-        <div>
-          <div className="flex justify-between items-center gap-4 mb-3">
-            <h4 className="text-sm font-semibold text-white uppercase tracking-wider">
-              Maximum 4.00 GPA
-            </h4>
-            <span className="text-xs font-medium text-muted-foreground bg-secondary/50 px-2.5 py-1 rounded-full shrink-0">
-              Total CH: {totalCH}
-            </span>
-          </div>
+        {viewMode === 'bars' ? (
+          <>
+            <section>
+              <div className="mb-3 flex items-end justify-between gap-3">
+                <h4 className="text-sm font-semibold uppercase tracking-wider text-white">
+                  Maximum 4.00 GPA
+                </h4>
+                <span className="shrink-0 rounded-md bg-secondary/50 px-2 py-1 text-xs font-medium text-muted-foreground">
+                  Total CH: {totalCH}
+                </span>
+              </div>
 
-          {viewMode === 'bars' ? (
-            <div className="w-full h-12 bg-background border border-border/30 rounded-xl overflow-hidden flex drop-shadow-sm">
-              {validSubjects.map((sub, index) => {
-                const widthPercentage = (sub.credits / totalCH) * 100;
-                const color = COLORS[index % COLORS.length];
+              <div className="w-full h-12 bg-background border border-border/30 rounded-xl overflow-hidden flex drop-shadow-sm">
+                {validSubjects.map((sub, index) => {
+                  const widthPercentage = (sub.credits / totalCH) * 100;
+                  const color = COLORS[index % COLORS.length];
 
-                return (
-                  <div
-                    key={sub.id}
-                    role="img"
-                    aria-label={`${sub.name}, ${sub.credits} credit hours, ${widthPercentage.toFixed(2)} percent contribution, maximum grade point 4.00`}
-                    className="h-full relative shrink-0 cursor-help border-r border-background/20 last:border-r-0 transition-[filter] duration-200 hover:brightness-110"
-                    style={{ width: `${widthPercentage}%`, backgroundColor: color }}
-                    onMouseEnter={(event) => handleSegmentEnter(sub, 'max', event.currentTarget)}
-                  />
-                );
-              })}
-            </div>
-          ) : (
-            renderPieChart('max')
-          )}
-        </div>
-
-        {/* Actual Achievement Bar */}
-        <div>
-          <div className="flex justify-between items-center gap-4 mb-3">
-            <h4 className="text-sm font-semibold text-white uppercase tracking-wider">
-              Your Actual Result
-            </h4>
-            <span className="text-xs font-medium text-muted-foreground shrink-0">
-              Weighted by Grade Points
-            </span>
-          </div>
-
-          {viewMode === 'bars' ? (
-            <div className="w-full h-12 bg-background border border-border/30 rounded-xl overflow-hidden flex drop-shadow-sm">
-              {validSubjects.map((sub, index) => {
-                const widthPercentage = (sub.credits / totalCH) * 100;
-                const hasResult = Boolean(sub.grade) || sub.marks !== undefined;
-                const achievedPercentage = hasResult
-                  ? clamp((sub.points / 4) * 100, 0, 100)
-                  : 0;
-                const color = COLORS[index % COLORS.length];
-
-                return (
-                  <div
-                    key={sub.id}
-                    role="img"
-                    aria-label={`${sub.name}, ${sub.credits} credit hours, ${widthPercentage.toFixed(2)} percent contribution, ${achievedPercentage.toFixed(0)} percent achieved`}
-                    className="h-full relative shrink-0 cursor-help border-r border-background/20 last:border-r-0 transition-[filter] duration-200 hover:brightness-110"
-                    style={{ width: `${widthPercentage}%` }}
-                    onMouseEnter={(event) => handleSegmentEnter(sub, 'actual', event.currentTarget)}
-                  >
+                  return (
                     <div
-                      className="absolute inset-0"
-                      style={{ backgroundColor: color, opacity: 0.2 }}
+                      key={sub.id}
+                      role="img"
+                      aria-label={`${sub.name}, ${sub.credits} credit hours, ${widthPercentage.toFixed(2)} percent contribution, maximum grade point 4.00`}
+                      className="h-full relative shrink-0 cursor-help border-r border-background/20 last:border-r-0 transition-[filter] duration-200 hover:brightness-110"
+                      style={{ width: `${widthPercentage}%`, backgroundColor: color }}
+                      onMouseEnter={(event) =>
+                        handleSegmentEnter(sub, 'max', event.currentTarget)
+                      }
                     />
+                  );
+                })}
+              </div>
+            </section>
 
+            <section>
+              <div className="mb-3 flex items-end justify-between gap-3">
+                <h4 className="text-sm font-semibold uppercase tracking-wider text-white">
+                  Your Actual Result
+                </h4>
+                <span className="text-right text-xs font-medium text-muted-foreground">
+                  Weighted by Grade Points
+                </span>
+              </div>
+
+              <div className="w-full h-12 bg-background border border-border/30 rounded-xl overflow-hidden flex drop-shadow-sm">
+                {validSubjects.map((sub, index) => {
+                  const widthPercentage = (sub.credits / totalCH) * 100;
+                  const hasResult = Boolean(sub.grade) || sub.marks !== undefined;
+                  const achievedPercentage = hasResult
+                    ? clamp((sub.points / 4) * 100, 0, 100)
+                    : 0;
+                  const color = COLORS[index % COLORS.length];
+
+                  return (
                     <div
-                      className="absolute inset-y-0 left-0 transition-[width] duration-700 ease-out"
-                      style={{ width: `${achievedPercentage}%`, backgroundColor: color }}
-                    />
-                  </div>
-                );
-              })}
-            </div>
-          ) : (
-            renderPieChart('actual')
-          )}
-        </div>
+                      key={sub.id}
+                      role="img"
+                      aria-label={`${sub.name}, ${sub.credits} credit hours, ${widthPercentage.toFixed(2)} percent contribution, ${achievedPercentage.toFixed(0)} percent achieved`}
+                      className="h-full relative shrink-0 cursor-help border-r border-background/20 last:border-r-0 transition-[filter] duration-200 hover:brightness-110"
+                      style={{ width: `${widthPercentage}%` }}
+                      onMouseEnter={(event) =>
+                        handleSegmentEnter(sub, 'actual', event.currentTarget)
+                      }
+                    >
+                      <div
+                        className="absolute inset-0"
+                        style={{ backgroundColor: color, opacity: 0.2 }}
+                      />
+                      <div
+                        className="absolute inset-y-0 left-0 transition-[width] duration-700 ease-out"
+                        style={{ width: `${achievedPercentage}%`, backgroundColor: color }}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+            </section>
+          </>
+        ) : (
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+            <section className="flex flex-col items-center">
+              <div className="mb-3 w-full text-center">
+                <h4 className="text-sm font-semibold uppercase tracking-wider text-white">
+                  Maximum 4.00 GPA
+                </h4>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Total CH: {totalCH}
+                </p>
+              </div>
+              {renderPieChart('max')}
+            </section>
 
+            <section className="flex flex-col items-center">
+              <div className="mb-3 w-full text-center">
+                <h4 className="text-sm font-semibold uppercase tracking-wider text-white">
+                  Your Actual Result
+                </h4>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Weighted by Grade Points
+                </p>
+              </div>
+              {renderPieChart('actual')}
+            </section>
+          </div>
+        )}
         {/* Subject Legend */}
         <div className="border-t border-border/40 pt-6">
           <div className="flex items-center justify-between gap-4 mb-4">
