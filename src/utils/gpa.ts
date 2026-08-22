@@ -61,23 +61,30 @@ export const calculateTotalCredits = (semesters: Semester[]): number => {
 
 export const getGPAColorClass = (gpa: number, isResting: boolean) => {
   if (isResting) {
-    return 'bg-gradient-to-r from-white to-gray-500 bg-clip-text text-transparent';
+    return 'text-muted-foreground';
   }
   if (gpa >= 3.5) {
-    return 'bg-gradient-to-r from-violet-400 to-blue-500 bg-clip-text text-transparent';
+    return 'text-emerald-600 dark:text-emerald-400';
   } else if (gpa >= 3.0) {
-    return 'bg-gradient-to-r from-emerald-400 to-teal-500 bg-clip-text text-transparent';
+    return 'text-blue-600 dark:text-blue-400';
   } else if (gpa >= 2.0) {
-    return 'bg-gradient-to-r from-amber-300 to-yellow-500 bg-clip-text text-transparent';
+    return 'text-amber-400 dark:text-amber-500';
   } else {
-    return 'bg-gradient-to-r from-rose-400 to-red-500 bg-clip-text text-transparent';
+    return 'text-red-600 dark:text-red-500';
   }
 };
 
 export const getGPATextColorClass = (gpa: number, isResting: boolean) => {
-  if (isResting) return 'text-white';
-  if (gpa >= 3.5) return 'text-violet-400';
-  if (gpa >= 3.0) return 'text-emerald-400';
-  if (gpa >= 2.0) return 'text-amber-400';
-  return 'text-rose-400';
+  if (isResting) {
+    return 'text-muted-foreground';
+  }
+  if (gpa >= 3.5) {
+    return 'text-emerald-600 dark:text-emerald-400';
+  } else if (gpa >= 3.0) {
+    return 'text-blue-600 dark:text-blue-400';
+  } else if (gpa >= 2.0) {
+    return 'text-lime-600 dark:text-lime-400';
+  } else {
+    return 'text-red-600 dark:text-red-400';
+  }
 };

@@ -11,7 +11,7 @@ const COLORS = [
   '#F43F5E', // rose
   '#84CC16', // lime
   '#14B8A6', // teal
-   '#EC4899', // pink
+  '#EC4899', // pink
   '#6366F1', // indigo
   
 ];

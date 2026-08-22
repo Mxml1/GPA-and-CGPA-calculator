@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useStore } from '../store/useStore';
 import { calculateTotalCredits, calculateCGPA } from '../utils/gpa';
 import { X, Target } from 'lucide-react';
@@ -28,7 +29,7 @@ export const ForecastingModal = ({ isOpen, onClose }: { isOpen: boolean, onClose
     }
   }
   
-  return (
+  return createPortal(
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4 fade-in">
       <div className="bg-card border border-border/50 shadow-2xl rounded-2xl w-full max-w-md overflow-hidden relative">
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary to-primary"></div>
@@ -93,6 +94,7 @@ export const ForecastingModal = ({ isOpen, onClose }: { isOpen: boolean, onClose
           
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };

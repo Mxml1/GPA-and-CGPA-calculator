@@ -1,15 +1,24 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useStore } from '../store/useStore';
 import { calculateCGPA, calculateTotalCredits, getGPAColorClass, getGPATextColorClass } from '../utils/gpa';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { Plus, Download, TrendingUp, Settings, FileText } from 'lucide-react';
+import { Plus, Download, TrendingUp, Settings, FileText, Pencil, Trash2 } from 'lucide-react';
 import { exportToPDF } from '../utils/export';
 import { ForecastingModal } from '../components/ForecastingModal';
 
 export const Dashboard = () => {
-  const { user, semesters } = useStore();
+  const { user, semesters, deleteSemester } = useStore();
+  const navigate = useNavigate();
   const [isForecastOpen, setIsForecastOpen] = useState(false);
+
+  const handleEdit = (sem: any) => {
+    window.localStorage.setItem('draft-subjects', JSON.stringify(sem.subjects));
+    window.localStorage.setItem('draft-semester-name', JSON.stringify(sem.name));
+    window.localStorage.setItem('draft-scale-id', JSON.stringify(sem.scaleId));
+    window.localStorage.setItem('editing-semester-id', JSON.stringify(sem.id));
+    navigate('/');
+  };
   
   const currentCGPA = calculateCGPA(semesters);
   const totalCredits = calculateTotalCredits(semesters);
@@ -111,20 +120,47 @@ export const Dashboard = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-             {semesters.map(sem => (
-               <div key={sem.id} className="bg-card border border-border/50 rounded-xl p-5 hover:border-primary/50 transition-colors group cursor-pointer shadow-md">
-                 <div className="flex justify-between items-start mb-4">
-                   <h4 className="font-bold text-foreground text-lg">{sem.name}</h4>
-                   <div className={`bg-secondary px-2.5 py-1 rounded-md font-bold text-sm border border-border ${getGPATextColorClass(sem.gpa, false)}`}>
-                     {sem.gpa.toFixed(2)}
-                   </div>
-                 </div>
-                 <div className="text-sm text-muted-foreground flex items-center justify-between">
-                   <span>{sem.subjects.length} courses</span>
-                   <span>{sem.subjects.reduce((sum, s) => sum + s.credits, 0)} credits</span>
-                 </div>
-               </div>
-             ))}
+              {semesters.map(sem => (
+                <div key={sem.id} className="bg-card border border-border/50 rounded-xl p-5 hover:border-primary/50 transition-colors group cursor-pointer shadow-md flex flex-col justify-between">
+                  <div>
+                    <div className="flex justify-between items-start mb-4">
+                      <h4 className="font-bold text-foreground text-lg">{sem.name}</h4>
+                      <div className={`bg-secondary px-2.5 py-1 rounded-md font-bold text-sm border border-border ${getGPATextColorClass(sem.gpa, false)}`}>
+                        {sem.gpa.toFixed(2)}
+                      </div>
+                    </div>
+                    <div className="text-sm text-muted-foreground flex items-center justify-between">
+                      <span>{sem.subjects.length} courses</span>
+                      <span>{sem.subjects.reduce((sum, s) => sum + s.credits, 0)} credits</span>
+                    </div>
+                  </div>
+                  
+                  <div className="flex space-x-2 mt-4 pt-4 border-t border-border/40 justify-end">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleEdit(sem);
+                      }}
+                      className="p-1.5 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded transition-colors"
+                      title="Edit Semester"
+                    >
+                      <Pencil size={15} />
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (window.confirm("Are you sure you want to delete this semester?")) {
+                          deleteSemester(sem.id);
+                        }
+                      }}
+                      className="p-1.5 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded transition-colors"
+                      title="Delete Semester"
+                    >
+                      <Trash2 size={15} />
+                    </button>
+                  </div>
+                </div>
+              ))}
           </div>
         )}
       </div>

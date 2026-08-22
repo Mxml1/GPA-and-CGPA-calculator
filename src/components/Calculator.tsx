@@ -8,9 +8,10 @@ import { useLocalStorage } from '../hooks/useLocalStorage';
 import { ContributionBars } from './ContributionBars';
 
 export const Calculator = ({ initialScaleId }: { initialScaleId?: string }) => {
-  const { scales, user, addSemester } = useStore();
+  const { scales, user, addSemester, updateSemester } = useStore();
   const [semesterName, setSemesterName] = useLocalStorage('draft-semester-name', '');
   const [studentName, setStudentName] = useLocalStorage('draft-student-name', '');
+  const [editingSemesterId, setEditingSemesterId] = useLocalStorage<string | null>('editing-semester-id', null);
 
   const handleSave = () => {
     if (!user) {
@@ -22,15 +23,34 @@ export const Calculator = ({ initialScaleId }: { initialScaleId?: string }) => {
       return;
     }
     const currentGPA = calculateGPA(subjects);
-    addSemester({
-      id: crypto.randomUUID(),
-      name: semesterName,
-      scaleId: selectedScaleId,
-      subjects: subjects.filter(s => s.name.trim() !== '' || (s.grade || s.marks !== undefined)),
-      gpa: currentGPA
-    });
-    alert("Semester saved successfully! You can view it in your Dashboard.");
+    
+    if (editingSemesterId) {
+      updateSemester(editingSemesterId, {
+        id: editingSemesterId,
+        name: semesterName,
+        scaleId: selectedScaleId,
+        subjects: subjects.filter(s => s.name.trim() !== '' || (s.grade || s.marks !== undefined)),
+        gpa: currentGPA
+      });
+      alert("Semester updated successfully!");
+      setEditingSemesterId(null);
+    } else {
+      addSemester({
+        id: crypto.randomUUID(),
+        name: semesterName,
+        scaleId: selectedScaleId,
+        subjects: subjects.filter(s => s.name.trim() !== '' || (s.grade || s.marks !== undefined)),
+        gpa: currentGPA
+      });
+      alert("Semester saved successfully! You can view it in your Dashboard.");
+    }
+    
     setSemesterName('');
+    setSubjects([
+      { id: crypto.randomUUID(), name: '', credits: 3, grade: '', points: 0 },
+      { id: crypto.randomUUID(), name: '', credits: 3, grade: '', points: 0 },
+      { id: crypto.randomUUID(), name: '', credits: 3, grade: '', points: 0 },
+    ]);
   };
   
   const [selectedScaleId, setSelectedScaleId] = useLocalStorage('draft-scale-id', initialScaleId || scales[0].id);
@@ -180,29 +200,47 @@ export const Calculator = ({ initialScaleId }: { initialScaleId?: string }) => {
               />
             </div>
           </div>
-          <div className="flex gap-2">
-            <button 
-              onClick={handleSave}
-              className="flex-1 justify-center bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-lg font-medium transition-colors whitespace-nowrap flex items-center gap-2"
-            >
-              <Save size={16} /> <span>Save Semester</span>
-            </button>
-            <button 
-              onClick={() => {
-                const currentSemester = {
-                  id: 'temp',
-                  name: semesterName || 'Current Semester',
-                  scaleId: selectedScaleId,
-                  subjects: subjects.filter(s => s.name.trim() !== '' || (s.grade || s.marks !== undefined)),
-                  gpa: currentGPA
-                };
-                exportSemesterToPDF(currentSemester, studentName || user?.name || 'Guest Student');
-              }}
-              className="flex-1 justify-center bg-secondary text-secondary-foreground hover:bg-secondary/80 px-4 py-2 rounded-lg font-medium transition-colors whitespace-nowrap flex items-center gap-2"
-              title="Download Semester Certificate PDF"
-            >
-              <Download size={16} /> <span>Export PDF</span>
-            </button>
+          <div className="flex flex-col gap-2 w-full">
+            <div className="flex gap-2">
+              <button 
+                onClick={handleSave}
+                className="flex-1 justify-center bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-lg font-medium transition-colors whitespace-nowrap flex items-center gap-2"
+              >
+                <Save size={16} /> <span>{editingSemesterId ? 'Update' : 'Save Semester'}</span>
+              </button>
+              <button 
+                onClick={() => {
+                  const currentSemester = {
+                    id: 'temp',
+                    name: semesterName || 'Current Semester',
+                    scaleId: selectedScaleId,
+                    subjects: subjects.filter(s => s.name.trim() !== '' || (s.grade || s.marks !== undefined)),
+                    gpa: currentGPA
+                  };
+                  exportSemesterToPDF(currentSemester, studentName || user?.name || 'Guest Student');
+                }}
+                className="flex-1 justify-center bg-secondary text-secondary-foreground hover:bg-secondary/80 px-4 py-2 rounded-lg font-medium transition-colors whitespace-nowrap flex items-center gap-2"
+                title="Download Semester Certificate PDF"
+              >
+                <Download size={16} /> <span>Export PDF</span>
+              </button>
+            </div>
+            {editingSemesterId && (
+              <button
+                onClick={() => {
+                  setEditingSemesterId(null);
+                  setSemesterName('');
+                  setSubjects([
+                    { id: crypto.randomUUID(), name: '', credits: 3, grade: '', points: 0 },
+                    { id: crypto.randomUUID(), name: '', credits: 3, grade: '', points: 0 },
+                    { id: crypto.randomUUID(), name: '', credits: 3, grade: '', points: 0 },
+                  ]);
+                }}
+                className="w-full justify-center bg-destructive/15 text-destructive hover:bg-destructive/25 px-4 py-2 rounded-lg font-medium transition-colors text-sm flex items-center gap-2 border border-destructive/20"
+              >
+                Cancel Edit (Discard Changes)
+              </button>
+            )}
           </div>
         </div>
         

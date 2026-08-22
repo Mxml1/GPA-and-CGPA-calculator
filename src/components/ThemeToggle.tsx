@@ -50,7 +50,7 @@ export const ThemeToggle = () => {
     <div className="relative flex items-center">
       <button
         onClick={handleToggle}
-        className="p-2 rounded-lg bg-secondary hover:bg-secondary/80 text-muted-foreground hover:text-foreground transition-all flex items-center justify-center border border-border/80 shadow-sm"
+        className="h-9 w-9 rounded-lg bg-secondary hover:bg-secondary/80 text-muted-foreground hover:text-foreground transition-all flex items-center justify-center border border-border/80 shadow-sm"
         title={activeAppearance === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
       >
         {activeAppearance === 'dark' ? (
@@ -62,7 +62,7 @@ export const ThemeToggle = () => {
 
       <button
         onClick={() => setShowDropdown(!showDropdown)}
-        className="p-2 ml-1 rounded-lg bg-secondary hover:bg-secondary/80 text-muted-foreground hover:text-foreground transition-all flex items-center justify-center border border-border/80 text-xs font-bold uppercase tracking-wider min-w-[3.5rem] shadow-sm select-none"
+        className="h-9 px-3 ml-1 rounded-lg bg-secondary hover:bg-secondary/80 text-muted-foreground hover:text-foreground transition-all flex items-center justify-center border border-border/80 text-xs font-bold uppercase tracking-wider min-w-[3.5rem] shadow-sm select-none"
         title="Select Theme Mode"
       >
         {theme === 'system' ? 'Sys' : theme}
