@@ -19,7 +19,7 @@ export const Calculator = ({ initialScaleId }: { initialScaleId?: string }) => {
       return;
     }
     if (!semesterName) {
-      alert("Please enter a name for this semester (e.g., 'Fall 2024').");
+      alert("Please enter a name for this semester (e.g., 'Fall 2025').");
       return;
     }
     const currentGPA = calculateGPA(subjects);
@@ -123,7 +123,7 @@ export const Calculator = ({ initialScaleId }: { initialScaleId?: string }) => {
                 type="number" 
                 min="0"
                 step="0.5"
-                className="w-full bg-background border border-border/50 rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all text-sm sm:text-base text-foreground"
+                className="w-full bg-background border border-border/50 rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all text-sm sm:text-base text-foreground [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                 value={sub.credits}
                 onChange={(e) => handleSubjectChange(sub.id, 'credits', parseFloat(e.target.value) || 0)}
               />
@@ -145,7 +145,7 @@ export const Calculator = ({ initialScaleId }: { initialScaleId?: string }) => {
                   type="number" 
                   min="0"
                   max="100"
-                  className="w-full bg-background border border-border/50 rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all text-sm sm:text-base text-foreground"
+                  className="w-full bg-background border border-border/50 rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all text-sm sm:text-base text-foreground [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                   value={sub.marks || ''}
                   onChange={(e) => handleSubjectChange(sub.id, 'marks', parseFloat(e.target.value))}
                   placeholder="e.g. 85"

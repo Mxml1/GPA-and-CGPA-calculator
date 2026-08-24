@@ -85,7 +85,7 @@ export const CGPACalculator = () => {
                 min="0"
                 step="0.5"
                 placeholder="e.g. 15"
-                className="w-full bg-background border border-border/50 rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all text-sm sm:text-base text-foreground"
+                className="w-full bg-background border border-border/50 rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all text-sm sm:text-base text-foreground [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                 value={sem.credits}
                 onChange={(e) => handleChange(sem.id, 'credits', parseFloat(e.target.value) || '')}
               />
@@ -97,7 +97,7 @@ export const CGPACalculator = () => {
                 max="4.0"
                 step="0.01"
                 placeholder="e.g. 3.5"
-                className="w-full bg-background border border-border/50 rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all text-sm sm:text-base text-foreground"
+                className="w-full bg-background border border-border/50 rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all text-sm sm:text-base text-foreground [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                 value={sem.gpa}
                 onChange={(e) => handleChange(sem.id, 'gpa', parseFloat(e.target.value) || '')}
               />
