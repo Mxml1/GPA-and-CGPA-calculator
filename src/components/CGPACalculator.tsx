@@ -1,4 +1,5 @@
 
+import type { CSSProperties } from 'react';
 import { Plus, Trash2, Download } from 'lucide-react';
 import { getGPAColorClass } from '../utils/gpa';
 import { useLocalStorage } from '../hooks/useLocalStorage';
@@ -69,7 +70,11 @@ export const CGPACalculator = () => {
         </div>
 
         {semesters.map((sem, index) => (
-          <div key={sem.id} className="ug-entry-row group/row">
+          <div
+            key={sem.id}
+            className="ug-entry-row group/row"
+            style={{ '--row-index': index } as CSSProperties}
+          >
             <div className="sm:col-span-6">
               <input 
                 type="text" 
@@ -117,7 +122,7 @@ export const CGPACalculator = () => {
 
       <button 
         onClick={handleAddSemester}
-        className="mt-6 flex items-center space-x-2 text-sm text-primary hover:text-primary-foreground hover:bg-primary px-4 py-2 rounded-lg font-medium transition-all duration-300 relative z-10 border border-primary/20"
+        className="ug-soft-button mt-6 flex items-center space-x-2 text-sm text-primary hover:text-primary-foreground hover:bg-primary px-4 py-2 rounded-lg font-medium relative z-10 border border-primary/20"
       >
         <Plus size={16} /> <span>Add Another Row</span>
       </button>
@@ -138,7 +143,7 @@ export const CGPACalculator = () => {
                 onClick={() => {
                   exportCGPAToPDF(semesters, studentName || user?.name || 'Guest Student', finalCGPA, totalCredits);
                 }}
-                className="bg-secondary text-secondary-foreground hover:bg-secondary/80 px-4 py-2 rounded-lg font-medium transition-colors whitespace-nowrap flex items-center gap-2"
+                className="ug-soft-button bg-secondary text-secondary-foreground hover:bg-secondary/80 px-4 py-2 rounded-lg font-medium whitespace-nowrap flex items-center gap-2"
                 title="Download CGPA Certificate PDF"
               >
                 <Download size={16} /> <span className="hidden sm:inline">Export PDF</span>
@@ -149,7 +154,7 @@ export const CGPACalculator = () => {
 
         <div className="flex flex-col items-end w-full sm:w-auto">
           <div className="text-sm font-medium text-muted-foreground uppercase tracking-widest mb-2">Overall CGPA</div>
-          <div className={`text-6xl font-black tracking-tighter drop-shadow-sm ${getGPAColorClass(parseFloat(finalCGPA), isResting)}`}>
+          <div key={finalCGPA} className={`ug-score-value text-6xl font-black tracking-tighter drop-shadow-sm ${getGPAColorClass(parseFloat(finalCGPA), isResting)}`}>
             {finalCGPA}
           </div>
         </div>

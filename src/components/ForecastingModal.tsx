@@ -38,7 +38,7 @@ export const ForecastingModal = ({ isOpen, onClose }: { isOpen: boolean, onClose
             <h3 className="text-xl font-bold text-foreground flex items-center gap-2">
               <Target size={20} className="text-primary" /> GPA Forecaster
             </h3>
-            <button onClick={onClose} className="text-muted-foreground hover:text-foreground transition-colors">
+            <button onClick={onClose} className="ug-soft-button text-muted-foreground hover:text-foreground">
               <X size={20} />
             </button>
           </div>
@@ -80,9 +80,9 @@ export const ForecastingModal = ({ isOpen, onClose }: { isOpen: boolean, onClose
             </div>
           </div>
           
-          <div className="bg-primary/10 border border-primary/20 rounded-xl p-5 text-center mt-6">
+          <div className="bg-primary/10 border border-primary/20 rounded-xl p-5 text-center mt-6 transition-all duration-200 hover:border-primary/35 hover:bg-primary/15">
             <p className="text-sm text-primary font-medium mb-1 uppercase tracking-wider">Required GPA</p>
-            <div className="text-5xl font-black text-foreground flex items-center justify-center gap-3">
+            <div key={requiredGPA !== null ? requiredGPA.toFixed(2) : '-.--'} className="ug-score-value text-5xl font-black text-foreground flex items-center justify-center gap-3">
               {requiredGPA !== null ? requiredGPA.toFixed(2) : '-.--'}
             </div>
             {message && (

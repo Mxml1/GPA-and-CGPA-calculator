@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import type { CSSProperties } from 'react';
 import { Plus, Trash2, Save, Download } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import type { Subject } from '../store/useStore';
@@ -123,7 +124,11 @@ export const Calculator = ({ initialScaleId }: { initialScaleId?: string }) => {
         </div>
 
         {subjects.map((sub, index) => (
-          <div key={sub.id} className="ug-entry-row group/row">
+          <div
+            key={sub.id}
+            className="ug-entry-row group/row"
+            style={{ '--row-index': index } as CSSProperties}
+          >
             <div className="sm:col-span-6">
               <input 
                 type="text" 
@@ -182,7 +187,7 @@ export const Calculator = ({ initialScaleId }: { initialScaleId?: string }) => {
 
       <button 
         onClick={handleAddSubject}
-        className="mt-6 flex items-center space-x-2 text-sm text-primary hover:text-primary-foreground hover:bg-primary px-4 py-2 rounded-lg font-medium transition-all duration-300 relative z-10 border border-primary/20"
+        className="ug-soft-button mt-6 flex items-center space-x-2 text-sm text-primary hover:text-primary-foreground hover:bg-primary px-4 py-2 rounded-lg font-medium relative z-10 border border-primary/20"
       >
         <Plus size={16} /> <span>Add Another Course</span>
       </button>
@@ -219,7 +224,7 @@ export const Calculator = ({ initialScaleId }: { initialScaleId?: string }) => {
             <div className="flex gap-2">
               <button 
                 onClick={handleSave}
-                className="flex-1 justify-center bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-lg font-medium transition-colors whitespace-nowrap flex items-center gap-2"
+                className="ug-soft-button flex-1 justify-center bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-lg font-medium whitespace-nowrap flex items-center gap-2"
               >
                 <Save size={16} /> <span>{editingSemesterId ? 'Update' : 'Save Semester'}</span>
               </button>
@@ -234,7 +239,7 @@ export const Calculator = ({ initialScaleId }: { initialScaleId?: string }) => {
                   };
                   exportSemesterToPDF(currentSemester, studentName || user?.name || 'Guest Student');
                 }}
-                className="flex-1 justify-center bg-secondary text-secondary-foreground hover:bg-secondary/80 px-4 py-2 rounded-lg font-medium transition-colors whitespace-nowrap flex items-center gap-2"
+                className="ug-soft-button flex-1 justify-center bg-secondary text-secondary-foreground hover:bg-secondary/80 px-4 py-2 rounded-lg font-medium whitespace-nowrap flex items-center gap-2"
                 title="Download Semester Certificate PDF"
               >
                 <Download size={16} /> <span>Export PDF</span>
@@ -251,7 +256,7 @@ export const Calculator = ({ initialScaleId }: { initialScaleId?: string }) => {
                     { id: crypto.randomUUID(), name: '', credits: 3, grade: '', points: 0 },
                   ]);
                 }}
-                className="w-full justify-center bg-destructive/15 text-destructive hover:bg-destructive/25 px-4 py-2 rounded-lg font-medium transition-colors text-sm flex items-center gap-2 border border-destructive/20"
+                className="ug-soft-button w-full justify-center bg-destructive/15 text-destructive hover:bg-destructive/25 px-4 py-2 rounded-lg font-medium text-sm flex items-center gap-2 border border-destructive/20"
               >
                 Cancel Edit (Discard Changes)
               </button>
@@ -261,7 +266,7 @@ export const Calculator = ({ initialScaleId }: { initialScaleId?: string }) => {
         
         <div className="flex flex-col items-end w-full sm:w-auto">
           <div className="text-sm font-medium text-muted-foreground uppercase tracking-widest mb-2">Semester GPA</div>
-          <div className={`text-6xl font-black tracking-tighter drop-shadow-sm ${getGPAColorClass(currentGPA, isResting)}`}>
+          <div key={currentGPA.toFixed(2)} className={`ug-score-value text-6xl font-black tracking-tighter drop-shadow-sm ${getGPAColorClass(currentGPA, isResting)}`}>
             {currentGPA.toFixed(2)}
           </div>
         </div>
