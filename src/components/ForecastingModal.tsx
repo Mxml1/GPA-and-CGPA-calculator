@@ -60,8 +60,8 @@ export const ForecastingModal = ({ isOpen, onClose }: { isOpen: boolean, onClose
               <input 
                 type="number" 
                 step="0.01"
-                placeholder="e.g. 3.5"
-                className="w-full bg-background border border-border/50 rounded-lg px-4 py-3 outline-none focus:border-primary transition-colors text-foreground [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                placeholder="3.50"
+                className="ug-field ug-field-number"
                 value={targetCGPA}
                 onChange={(e) => setTargetCGPA(parseFloat(e.target.value) || '')}
               />
@@ -72,8 +72,8 @@ export const ForecastingModal = ({ isOpen, onClose }: { isOpen: boolean, onClose
               <input 
                 type="number" 
                 step="1"
-                placeholder="e.g. 15"
-                className="w-full bg-background border border-border/50 rounded-lg px-4 py-3 outline-none focus:border-primary transition-colors text-foreground [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                placeholder="15"
+                className="ug-field ug-field-number"
                 value={nextCredits}
                 onChange={(e) => setNextCredits(parseFloat(e.target.value) || '')}
               />

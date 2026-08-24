@@ -61,51 +61,51 @@ export const CGPACalculator = () => {
       </div>
 
       <div className="space-y-3 relative z-10">
-        <div className="grid grid-cols-12 gap-3 sm:gap-4 px-2 text-xs sm:text-sm font-semibold text-muted-foreground uppercase tracking-wider">
-          <div className="col-span-5">Semester / Label</div>
-          <div className="col-span-3">Credits</div>
-          <div className="col-span-3">GPA</div>
+        <div className="hidden sm:grid grid-cols-12 gap-3 px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+          <div className="col-span-6">Semester / Label</div>
+          <div className="col-span-2 text-center">Credits</div>
+          <div className="col-span-3 text-center">GPA</div>
           <div className="col-span-1"></div>
         </div>
 
         {semesters.map((sem, index) => (
-          <div key={sem.id} className="grid grid-cols-12 gap-3 sm:gap-4 items-center group/row">
-            <div className="col-span-5">
+          <div key={sem.id} className="ug-entry-row group/row">
+            <div className="sm:col-span-6">
               <input 
                 type="text" 
                 placeholder={`Semester ${index + 1}`}
-                className="w-full bg-background border border-border/50 rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all text-sm sm:text-base text-foreground placeholder:text-muted-foreground"
+                className="ug-field"
                 value={sem.name}
                 onChange={(e) => handleChange(sem.id, 'name', e.target.value)}
               />
             </div>
-            <div className="col-span-3">
+            <div className="sm:col-span-2">
               <input 
                 type="number" 
                 min="0"
                 step="0.5"
-                placeholder="e.g. 15"
-                className="w-full bg-background border border-border/50 rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all text-sm sm:text-base text-foreground [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                placeholder="15"
+                className="ug-field ug-field-number"
                 value={sem.credits}
                 onChange={(e) => handleChange(sem.id, 'credits', parseFloat(e.target.value) || '')}
               />
             </div>
-            <div className="col-span-3">
+            <div className="sm:col-span-3">
               <input 
                 type="number" 
                 min="0"
                 max="4.0"
                 step="0.01"
-                placeholder="e.g. 3.5"
-                className="w-full bg-background border border-border/50 rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all text-sm sm:text-base text-foreground [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                placeholder="3.50"
+                className="ug-field ug-field-number"
                 value={sem.gpa}
                 onChange={(e) => handleChange(sem.id, 'gpa', parseFloat(e.target.value) || '')}
               />
             </div>
-            <div className="col-span-1 flex justify-end">
+            <div className="sm:col-span-1 ug-row-action">
               <button 
                 onClick={() => handleRemoveSemester(sem.id)}
-                className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-md transition-all p-2 opacity-0 group-hover/row:opacity-100 focus:opacity-100"
+                className="ug-icon-button"
                 title="Remove Row"
               >
                 <Trash2 size={18} />
@@ -130,7 +130,7 @@ export const CGPACalculator = () => {
               <input 
                 type="text" 
                 placeholder="e.g. Max"
-                className="w-full bg-background border border-border/50 rounded-lg px-4 py-2 outline-none focus:border-primary transition-all text-foreground text-sm sm:text-base"
+                className="ug-field h-11"
                 value={studentName}
                 onChange={(e) => setStudentName(e.target.value)}
               />

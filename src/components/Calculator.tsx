@@ -115,38 +115,38 @@ export const Calculator = ({ initialScaleId }: { initialScaleId?: string }) => {
       </div>
 
       <div className="space-y-3 relative z-10">
-        <div className="grid grid-cols-12 gap-3 sm:gap-4 px-2 text-xs sm:text-sm font-semibold text-muted-foreground uppercase tracking-wider">
-          <div className="col-span-5">Course</div>
-          <div className="col-span-3">Credits</div>
-          <div className="col-span-3">{activeScale.type === 'grade' ? 'Grade' : 'Marks (%)'}</div>
+        <div className="hidden sm:grid grid-cols-12 gap-3 px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+          <div className="col-span-6">Course</div>
+          <div className="col-span-2 text-center">Credits</div>
+          <div className="col-span-3 text-center">{activeScale.type === 'grade' ? 'Grade' : 'Marks (%)'}</div>
           <div className="col-span-1"></div>
         </div>
 
         {subjects.map((sub, index) => (
-          <div key={sub.id} className="grid grid-cols-12 gap-3 sm:gap-4 items-center group/row">
-            <div className="col-span-5">
+          <div key={sub.id} className="ug-entry-row group/row">
+            <div className="sm:col-span-6">
               <input 
                 type="text" 
                 placeholder={`Course ${index + 1}`}
-                className="w-full bg-background border border-border/50 rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all text-sm sm:text-base text-foreground placeholder:text-muted-foreground"
+                className="ug-field"
                 value={sub.name}
                 onChange={(e) => handleSubjectChange(sub.id, 'name', e.target.value)}
               />
             </div>
-            <div className="col-span-3">
+            <div className="sm:col-span-2">
               <input 
                 type="number" 
                 min="0"
                 step="0.5"
-                className="w-full bg-background border border-border/50 rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all text-sm sm:text-base text-foreground [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                className="ug-field ug-field-number"
                 value={sub.credits}
                 onChange={(e) => handleSubjectChange(sub.id, 'credits', parseFloat(e.target.value) || 0)}
               />
             </div>
-            <div className="col-span-3">
+            <div className="sm:col-span-3">
               {activeScale.type === 'grade' ? (
                 <select
-                  className="w-full bg-background border border-border/50 rounded-lg px-2 sm:px-4 py-2 sm:py-2.5 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all appearance-none text-sm sm:text-base text-foreground"
+                  className="ug-field ug-select-field text-center"
                   value={sub.grade}
                   onChange={(e) => handleSubjectChange(sub.id, 'grade', e.target.value)}
                 >
@@ -160,17 +160,17 @@ export const Calculator = ({ initialScaleId }: { initialScaleId?: string }) => {
                   type="number" 
                   min="0"
                   max="100"
-                  className="w-full bg-background border border-border/50 rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all text-sm sm:text-base text-foreground [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                  className="ug-field ug-field-number"
                   value={sub.marks || ''}
                   onChange={(e) => handleSubjectChange(sub.id, 'marks', parseFloat(e.target.value))}
-                  placeholder="e.g. 85"
+                  placeholder="85"
                 />
               )}
             </div>
-            <div className="col-span-1 flex justify-end">
+            <div className="sm:col-span-1 ug-row-action">
               <button 
                 onClick={() => handleRemoveSubject(sub.id)}
-                className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-md transition-all p-2 opacity-0 group-hover/row:opacity-100 focus:opacity-100"
+                className="ug-icon-button"
                 title="Remove Subject"
               >
                 <Trash2 size={18} />
@@ -199,7 +199,7 @@ export const Calculator = ({ initialScaleId }: { initialScaleId?: string }) => {
               <input 
                 type="text" 
                 placeholder="e.g. Max"
-                className="w-full bg-background border border-border/50 rounded-lg px-4 py-2 outline-none focus:border-primary transition-all text-foreground text-sm sm:text-base"
+                className="ug-field h-11"
                 value={studentName}
                 onChange={(e) => setStudentName(e.target.value)}
               />
@@ -209,7 +209,7 @@ export const Calculator = ({ initialScaleId }: { initialScaleId?: string }) => {
               <input 
                 type="text" 
                 placeholder="e.g. Fall 2025"
-                className="w-full bg-background border border-border/50 rounded-lg px-4 py-2 outline-none focus:border-primary transition-all text-foreground text-sm sm:text-base"
+                className="ug-field h-11"
                 value={semesterName}
                 onChange={(e) => setSemesterName(e.target.value)}
               />
