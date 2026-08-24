@@ -56,18 +56,6 @@ interface AppState {
   deleteSemester: (id: string) => void;
 }
 
-const defaultScale: GradingScale = {
-  id: 'default-4.0',
-  name: 'Standard Grade Scale (A-F)',
-  type: 'grade',
-  mappings: [
-    { grade: 'A', points: 4.0 },
-    { grade: 'B', points: 3.0 },
-    { grade: 'C', points: 2.0 },
-    { grade: 'D', points: 1.0 },
-    { grade: 'F', points: 0.0 },
-  ]
-};
 
 const exactMarksScale: GradingScale = {
   id: 'exact-marks',
@@ -113,6 +101,18 @@ const exactMarksScale: GradingScale = {
     { grade: 'F', minMarks: 0, maxMarks: 49, points: 0.0 }
   ]
 };
+const defaultScale: GradingScale = {
+  id: 'default-4.0',
+  name: 'Standard Grade Scale (A-F)',
+  type: 'grade',
+  mappings: [
+    { grade: 'A', points: 4.0 },
+    { grade: 'B', points: 3.0 },
+    { grade: 'C', points: 2.0 },
+    { grade: 'D', points: 1.0 },
+    { grade: 'F', points: 0.0 },
+  ]
+};
 
 export const useStore = create<AppState>()(
   persist(
@@ -147,3 +147,5 @@ export const useStore = create<AppState>()(
     }
   )
 );
+
+// selectedScaleId

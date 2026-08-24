@@ -88,3 +88,4 @@ export const getGPATextColorClass = (gpa: number, isResting: boolean) => {
     return 'text-red-600 dark:text-red-400';
   }
 };
+ 

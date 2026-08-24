@@ -6,6 +6,13 @@ import { calculateSubjectPoints, calculateGPA, getGPAColorClass } from '../utils
 import { exportSemesterToPDF } from '../utils/export';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import { ContributionBars } from './ContributionBars';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from './ui/select';
 
 export const Calculator = ({ initialScaleId }: { initialScaleId?: string }) => {
   const { scales, user, addSemester, updateSemester } = useStore();
@@ -90,13 +97,21 @@ export const Calculator = ({ initialScaleId }: { initialScaleId?: string }) => {
       
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 relative z-10">
         <h3 className="text-xl font-bold tracking-tight text-foreground mb-4 sm:mb-0">Semester Grades</h3>
-        <select 
-          className="bg-secondary text-secondary-foreground border border-border rounded-lg px-4 py-2 focus:ring-2 ring-primary outline-none text-sm appearance-none cursor-pointer hover:bg-secondary/80 transition-colors"
+        <Select
           value={selectedScaleId}
-          onChange={(e) => setSelectedScaleId(e.target.value)}
+          onValueChange={setSelectedScaleId}
         >
-          {scales.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
-        </select>
+          <SelectTrigger className="w-full sm:w-[330px]" aria-label="Grade scale">
+            <SelectValue placeholder="Select grade scale" />
+          </SelectTrigger>
+          <SelectContent align="end">
+            {scales.map(s => (
+              <SelectItem key={s.id} value={s.id}>
+                {s.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       <div className="space-y-3 relative z-10">
