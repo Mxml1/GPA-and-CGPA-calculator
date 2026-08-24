@@ -58,7 +58,7 @@ export const Dashboard = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-card border border-border/50 p-6 rounded-2xl shadow-lg relative overflow-hidden group">
-          <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+          <div className="absolute top-0 right-0 p-4 opacity-5 ">
             <TrendingUp size={80} />
           </div>
           <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider mb-2">Current CGPA</p>
@@ -66,7 +66,7 @@ export const Dashboard = () => {
         </div>
         
         <div className="bg-card border border-border/50 p-6 rounded-2xl shadow-lg relative overflow-hidden group">
-          <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+          <div className="absolute top-0 right-0 p-4 opacity-5">
             <FileText size={80} />
           </div>
           <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider mb-2">Total Credits</p>
@@ -74,8 +74,8 @@ export const Dashboard = () => {
         </div>
 
         <div className="bg-card border border-border/50 p-6 rounded-2xl shadow-lg relative overflow-hidden group flex flex-col justify-center items-center cursor-pointer hover:bg-card/80 transition-colors border-dashed border-2">
-          <Settings className="text-muted-foreground mb-3 group-hover:text-primary transition-colors" size={32} />
-          <p className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">Manage Grading Scales</p>
+          <Settings className="text-muted-foreground mb-3" size={32} />
+          <p className="text-sm font-medium text-foreground">Manage Grading Scales</p>
         </div>
       </div>
 
