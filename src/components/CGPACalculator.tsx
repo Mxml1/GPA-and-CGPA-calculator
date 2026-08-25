@@ -5,6 +5,7 @@ import { getGPAColorClass } from '../utils/gpa';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import { exportCGPAToPDF } from '../utils/export';
 import { useStore } from '../store/useStore';
+import { trackEvent } from '../lib/analytics';
 
 type SimpleSemester = {
   id: string;
@@ -23,10 +24,12 @@ export const CGPACalculator = () => {
 
   const handleAddSemester = () => {
     setSemesters([...semesters, { id: crypto.randomUUID(), name: '', gpa: '', credits: '' }]);
+    trackEvent('semester_row_added', { calculator_type: 'cgpa', row_count: semesters.length + 1 });
   };
 
   const handleRemoveSemester = (id: string) => {
     setSemesters(semesters.filter(s => s.id !== id));
+    trackEvent('semester_row_removed', { calculator_type: 'cgpa', row_count: Math.max(semesters.length - 1, 0) });
   };
 
   const handleChange = (id: string, field: keyof SimpleSemester, value: string | number) => {
@@ -142,6 +145,11 @@ export const CGPACalculator = () => {
               <button 
                 onClick={() => {
                   exportCGPAToPDF(semesters, studentName || user?.name || 'Guest Student', finalCGPA, totalCredits);
+                  trackEvent('pdf_exported', {
+                    calculator_type: 'cgpa',
+                    semester_count: semesters.filter(s => typeof s.gpa === 'number' && typeof s.credits === 'number').length,
+                    total_credits: totalCredits,
+                  });
                 }}
                 className="ug-soft-button bg-secondary text-secondary-foreground hover:bg-secondary/80 px-4 py-2 rounded-lg font-medium whitespace-nowrap flex items-center gap-2"
                 title="Download CGPA Certificate PDF"

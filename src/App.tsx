@@ -1,18 +1,51 @@
-import { useState } from 'react';
-import { HashRouter, Routes, Route, Link, Navigate } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
+import { HashRouter, Routes, Route, Link, Navigate, useLocation } from 'react-router-dom';
 import { Calculator } from './components/Calculator';
 import { CGPACalculator } from './components/CGPACalculator';
 import { Dashboard } from './pages/Dashboard';
 import { useStore } from './store/useStore';
 import { LogOut, LayoutDashboard, Calculator as CalcIcon } from 'lucide-react';
 import { ThemeToggle } from './components/ThemeToggle';
+import { trackEvent, trackPageView } from './lib/analytics';
+
+const AnalyticsPageTracker = () => {
+  const location = useLocation();
+  const lastTrackedPath = useRef<string | null>(null);
+
+  useEffect(() => {
+    const path = `${location.pathname}${location.search}${location.hash}`;
+
+    if (lastTrackedPath.current === path) return;
+
+    trackPageView(path);
+    lastTrackedPath.current = path;
+  }, [location]);
+
+  return null;
+};
 
 function App() {
   const { user, loginMock, logoutMock } = useStore();
   const [activeTab, setActiveTab] = useState<'gpa' | 'cgpa'>('gpa');
 
+  const handleTabChange = (tab: 'gpa' | 'cgpa') => {
+    setActiveTab(tab);
+    trackEvent('calculator_tab_selected', { calculator_type: tab });
+  };
+
+  const handleLogin = () => {
+    loginMock();
+    trackEvent('sign_in_mock_clicked');
+  };
+
+  const handleLogout = () => {
+    logoutMock();
+    trackEvent('sign_out_mock_clicked');
+  };
+
   return (
     <HashRouter>
+      <AnalyticsPageTracker />
       <div className="min-h-screen bg-background text-foreground font-sans selection:bg-primary/30 flex flex-col transition-colors duration-200">
         {/* Navigation Bar */}
         <header className="border-b border-border/40 bg-card/40 backdrop-blur-xl sticky top-0 z-50">
@@ -45,7 +78,7 @@ function App() {
                       {user.isPremium && <span className="text-[10px] text-primary uppercase font-bold tracking-wider">Premium</span>}
                     </div>
                     <button 
-                      onClick={logoutMock}
+                      onClick={handleLogout}
                       className="text-muted-foreground hover:text-destructive p-2 rounded-full hover:bg-destructive/10 transition-colors"
                       title="Sign Out"
                     >
@@ -57,7 +90,7 @@ function App() {
                 <>
                   <Link to="/" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">Calculator</Link>
                   <button 
-                    onClick={loginMock}
+                    onClick={handleLogin}
                     className="text-sm font-semibold bg-foreground text-background hover:bg-foreground/90 px-5 py-2 rounded-full transition-all hover:scale-105 active:scale-95 shadow-lg shadow-foreground/10"
                   >
                     Sign In to Save
@@ -87,13 +120,13 @@ function App() {
                   <div className="flex justify-center">
                     <div className="bg-card/50 backdrop-blur-md border border-border/50 p-1.5 rounded-xl inline-flex shadow-lg relative z-20">
                       <button 
-                        onClick={() => setActiveTab('gpa')}
+                        onClick={() => handleTabChange('gpa')}
                         className={`px-8 py-2.5 rounded-lg text-sm font-bold transition-all ${activeTab === 'gpa' ? 'bg-primary text-primary-foreground shadow-md' : 'text-muted-foreground hover:text-foreground'}`}
                       >
                         GPA Calculator
                       </button>
                       <button 
-                        onClick={() => setActiveTab('cgpa')}
+                        onClick={() => handleTabChange('cgpa')}
                         className={`px-8 py-2.5 rounded-lg text-sm font-bold transition-all ${activeTab === 'cgpa' ? 'bg-primary text-primary-foreground shadow-md' : 'text-muted-foreground hover:text-foreground'}`}
                       >
                         CGPA Calculator

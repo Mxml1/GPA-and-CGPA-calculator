@@ -6,6 +6,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { Plus, Download, TrendingUp, Settings, FileText, Pencil, Trash2 } from 'lucide-react';
 import { exportToPDF } from '../utils/export';
 import { ForecastingModal } from '../components/ForecastingModal';
+import { trackEvent } from '../lib/analytics';
 
 export const Dashboard = () => {
   const { user, semesters, deleteSemester } = useStore();
@@ -17,6 +18,10 @@ export const Dashboard = () => {
     window.localStorage.setItem('draft-semester-name', JSON.stringify(sem.name));
     window.localStorage.setItem('draft-scale-id', JSON.stringify(sem.scaleId));
     window.localStorage.setItem('editing-semester-id', JSON.stringify(sem.id));
+    trackEvent('semester_edit_started', {
+      source: 'dashboard',
+      course_count: sem.subjects.length,
+    });
     navigate('/');
   };
   
@@ -43,13 +48,22 @@ export const Dashboard = () => {
         <div className="flex space-x-3 mt-4 sm:mt-0">
           <button 
             className="flex items-center space-x-2 bg-secondary hover:bg-secondary/80 text-secondary-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-            onClick={() => setIsForecastOpen(true)}
+            onClick={() => {
+              setIsForecastOpen(true);
+              trackEvent('forecast_opened', { semester_count: semesters.length });
+            }}
           >
             <TrendingUp size={16} /> <span>Forecast</span>
           </button>
           <button 
             className="flex items-center space-x-2 bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-            onClick={() => exportToPDF(semesters, user!)}
+            onClick={() => {
+              exportToPDF(semesters, user!);
+              trackEvent('pdf_exported', {
+                source: 'dashboard',
+                semester_count: semesters.length,
+              });
+            }}
           >
             <Download size={16} /> <span>Export PDF</span>
           </button>
@@ -151,6 +165,10 @@ export const Dashboard = () => {
                         e.stopPropagation();
                         if (window.confirm("Are you sure you want to delete this semester?")) {
                           deleteSemester(sem.id);
+                          trackEvent('semester_deleted', {
+                            source: 'dashboard',
+                            course_count: sem.subjects.length,
+                          });
                         }
                       }}
                       className="p-1.5 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded transition-colors"

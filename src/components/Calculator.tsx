@@ -7,6 +7,7 @@ import { calculateSubjectPoints, calculateGPA, getGPAColorClass } from '../utils
 import { exportSemesterToPDF } from '../utils/export';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import { ContributionBars } from './ContributionBars';
+import { trackEvent } from '../lib/analytics';
 import {
   Select,
   SelectContent,
@@ -23,22 +24,30 @@ export const Calculator = ({ initialScaleId }: { initialScaleId?: string }) => {
 
   const handleSave = () => {
     if (!user) {
+      trackEvent('semester_save_blocked', { reason: 'signed_out' });
       alert("Please sign in to save your semester.");
       return;
     }
     if (!semesterName) {
+      trackEvent('semester_save_blocked', { reason: 'missing_semester_name' });
       alert("Please enter a name for this semester (e.g., 'Fall 2025').");
       return;
     }
     const currentGPA = calculateGPA(subjects);
+    const completedSubjects = subjects.filter(s => s.name.trim() !== '' || (s.grade || s.marks !== undefined));
     
     if (editingSemesterId) {
       updateSemester(editingSemesterId, {
         id: editingSemesterId,
         name: semesterName,
         scaleId: selectedScaleId,
-        subjects: subjects.filter(s => s.name.trim() !== '' || (s.grade || s.marks !== undefined)),
+        subjects: completedSubjects,
         gpa: currentGPA
+      });
+      trackEvent('semester_updated', {
+        calculator_type: 'gpa',
+        scale_type: activeScale.type,
+        course_count: completedSubjects.length,
       });
       alert("Semester updated successfully!");
       setEditingSemesterId(null);
@@ -47,8 +56,13 @@ export const Calculator = ({ initialScaleId }: { initialScaleId?: string }) => {
         id: crypto.randomUUID(),
         name: semesterName,
         scaleId: selectedScaleId,
-        subjects: subjects.filter(s => s.name.trim() !== '' || (s.grade || s.marks !== undefined)),
+        subjects: completedSubjects,
         gpa: currentGPA
+      });
+      trackEvent('semester_saved', {
+        calculator_type: 'gpa',
+        scale_type: activeScale.type,
+        course_count: completedSubjects.length,
       });
       alert("Semester saved successfully! You can view it in your Dashboard.");
     }
@@ -72,10 +86,12 @@ export const Calculator = ({ initialScaleId }: { initialScaleId?: string }) => {
 
   const handleAddSubject = () => {
     setSubjects([...subjects, { id: crypto.randomUUID(), name: '', credits: 3, grade: '', points: 0 }]);
+    trackEvent('course_row_added', { calculator_type: 'gpa', row_count: subjects.length + 1 });
   };
 
   const handleRemoveSubject = (id: string) => {
     setSubjects(subjects.filter(s => s.id !== id));
+    trackEvent('course_row_removed', { calculator_type: 'gpa', row_count: Math.max(subjects.length - 1, 0) });
   };
 
   const handleSubjectChange = (id: string, field: keyof Subject, value: any) => {
@@ -100,7 +116,14 @@ export const Calculator = ({ initialScaleId }: { initialScaleId?: string }) => {
         <h3 className="text-xl font-bold tracking-tight text-foreground mb-4 sm:mb-0">Semester Grades</h3>
         <Select
           value={selectedScaleId}
-          onValueChange={setSelectedScaleId}
+          onValueChange={(value) => {
+            setSelectedScaleId(value);
+            const nextScale = scales.find(s => s.id === value);
+            trackEvent('grade_scale_selected', {
+              calculator_type: 'gpa',
+              scale_type: nextScale?.type,
+            });
+          }}
         >
           <SelectTrigger className="w-full sm:w-[330px]" aria-label="Grade scale">
             <SelectValue placeholder="Select grade scale" />
@@ -230,14 +253,19 @@ export const Calculator = ({ initialScaleId }: { initialScaleId?: string }) => {
               </button>
               <button 
                 onClick={() => {
+                  const completedSubjects = subjects.filter(s => s.name.trim() !== '' || (s.grade || s.marks !== undefined));
                   const currentSemester = {
                     id: 'temp',
                     name: semesterName || 'Current Semester',
                     scaleId: selectedScaleId,
-                    subjects: subjects.filter(s => s.name.trim() !== '' || (s.grade || s.marks !== undefined)),
+                    subjects: completedSubjects,
                     gpa: currentGPA
                   };
                   exportSemesterToPDF(currentSemester, studentName || user?.name || 'Guest Student');
+                  trackEvent('pdf_exported', {
+                    calculator_type: 'gpa',
+                    course_count: completedSubjects.length,
+                  });
                 }}
                 className="ug-soft-button flex-1 justify-center bg-secondary text-secondary-foreground hover:bg-secondary/80 px-4 py-2 rounded-lg font-medium whitespace-nowrap flex items-center gap-2"
                 title="Download Semester Certificate PDF"
@@ -255,6 +283,7 @@ export const Calculator = ({ initialScaleId }: { initialScaleId?: string }) => {
                     { id: crypto.randomUUID(), name: '', credits: 3, grade: '', points: 0 },
                     { id: crypto.randomUUID(), name: '', credits: 3, grade: '', points: 0 },
                   ]);
+                  trackEvent('semester_edit_cancelled', { calculator_type: 'gpa' });
                 }}
                 className="ug-soft-button w-full justify-center bg-destructive/15 text-destructive hover:bg-destructive/25 px-4 py-2 rounded-lg font-medium text-sm flex items-center gap-2 border border-destructive/20"
               >

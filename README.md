@@ -1,5 +1,15 @@
 # React + TypeScript + Vite
 
+## Google Analytics
+
+Create a `.env` file from `.env.example` and set your GA4 Measurement ID:
+
+```bash
+VITE_GA_MEASUREMENT_ID=G-XXXXXXXXXX
+```
+
+Analytics is disabled when this value is missing. UniGrade only sends privacy-safe product events such as tab selections, row additions/removals, saves, exports, and theme changes. Do not send grades, course names, student names, emails, roll numbers, or university IDs to analytics.
+
 This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
 
 Currently, two official plugins are available:

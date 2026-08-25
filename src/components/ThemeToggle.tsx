@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Sun, Moon, Laptop } from 'lucide-react';
+import { trackEvent } from '../lib/analytics';
 
 export type Theme = 'light' | 'dark' | 'system';
 
@@ -40,9 +41,13 @@ export const ThemeToggle = () => {
 
   const handleToggle = () => {
     if (theme === 'system') {
-      setTheme(isSystemDark ? 'light' : 'dark');
+      const nextTheme = isSystemDark ? 'light' : 'dark';
+      setTheme(nextTheme);
+      trackEvent('theme_changed', { theme: nextTheme });
     } else {
-      setTheme(theme === 'light' ? 'dark' : 'light');
+      const nextTheme = theme === 'light' ? 'dark' : 'light';
+      setTheme(nextTheme);
+      trackEvent('theme_changed', { theme: nextTheme });
     }
   };
 
@@ -76,6 +81,7 @@ export const ThemeToggle = () => {
               onClick={() => {
                 setTheme('light');
                 setShowDropdown(false);
+                trackEvent('theme_changed', { theme: 'light' });
               }}
               className={`w-full text-left px-3 py-2 text-sm flex items-center space-x-2 transition-colors ${theme === 'light' ? 'bg-primary/10 text-primary font-semibold' : 'text-muted-foreground hover:text-foreground hover:bg-secondary/40'}`}
             >
@@ -86,6 +92,7 @@ export const ThemeToggle = () => {
               onClick={() => {
                 setTheme('dark');
                 setShowDropdown(false);
+                trackEvent('theme_changed', { theme: 'dark' });
               }}
               className={`w-full text-left px-3 py-2 text-sm flex items-center space-x-2 transition-colors ${theme === 'dark' ? 'bg-primary/10 text-primary font-semibold' : 'text-muted-foreground hover:text-foreground hover:bg-secondary/40'}`}
             >
@@ -96,6 +103,7 @@ export const ThemeToggle = () => {
               onClick={() => {
                 setTheme('system');
                 setShowDropdown(false);
+                trackEvent('theme_changed', { theme: 'system' });
               }}
               className={`w-full text-left px-3 py-2 text-sm flex items-center space-x-2 transition-colors ${theme === 'system' ? 'bg-primary/10 text-primary font-semibold' : 'text-muted-foreground hover:text-foreground hover:bg-secondary/40'}`}
             >
