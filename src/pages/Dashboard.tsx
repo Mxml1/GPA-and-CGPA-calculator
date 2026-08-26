@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useStore } from '../store/useStore';
-import { calculateCGPA, calculateTotalCredits, getGPAColorClass, getGPATextColorClass } from '../utils/gpa';
+import { calculateCGPA, calculateTotalCredits, getGPAColorClass, getGPABadgeClass } from '../utils/gpa';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Plus, Download, TrendingUp, Settings, FileText, Pencil, Trash2 } from 'lucide-react';
 import { exportToPDF } from '../utils/export';
@@ -25,12 +25,29 @@ export const Dashboard = () => {
     navigate('/');
   };
   
-  const currentCGPA = calculateCGPA(semesters);
-  const totalCredits = calculateTotalCredits(semesters);
+  // Helper to parse semester chronological order (e.g. "Spring 2025" -> 20251)
+  const parseSemesterOrder = (name: string) => {
+    const clean = name.trim().toLowerCase();
+    const yearMatch = clean.match(/\d{4}/);
+    const year = yearMatch ? parseInt(yearMatch[0], 10) : 0;
+    
+    let termOrder = 0;
+    if (clean.includes('spring')) termOrder = 1;
+    else if (clean.includes('summer')) termOrder = 2;
+    else if (clean.includes('fall')) termOrder = 3;
+    else if (clean.includes('winter')) termOrder = 4;
+    
+    return year * 10 + termOrder;
+  };
+
+  const sortedSemesters = [...semesters].sort((a, b) => parseSemesterOrder(a.name) - parseSemesterOrder(b.name));
+
+  const currentCGPA = calculateCGPA(sortedSemesters);
+  const totalCredits = calculateTotalCredits(sortedSemesters);
   
   // Format data for Recharts
-  const chartData = semesters.map((sem, index) => {
-    const semsUpToNow = semesters.slice(0, index + 1);
+  const chartData = sortedSemesters.map((sem, index) => {
+    const semsUpToNow = sortedSemesters.slice(0, index + 1);
     return {
       name: sem.name,
       gpa: sem.gpa,
@@ -76,7 +93,7 @@ export const Dashboard = () => {
             <TrendingUp size={80} />
           </div>
           <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider mb-2">Current CGPA</p>
-          <p className={`text-5xl font-black ${getGPAColorClass(currentCGPA, semesters.length === 0)}`}>{currentCGPA.toFixed(2)}</p>
+          <p className={`text-5xl font-black ${getGPAColorClass(currentCGPA, sortedSemesters.length === 0)}`}>{currentCGPA.toFixed(2)}</p>
         </div>
         
         <div className="bg-card border border-border/50 p-6 rounded-2xl shadow-lg relative overflow-hidden group">
@@ -134,12 +151,12 @@ export const Dashboard = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {semesters.map(sem => (
+              {sortedSemesters.map(sem => (
                 <div key={sem.id} className="bg-card border border-border/50 rounded-xl p-5 hover:border-primary/50 transition-colors group cursor-pointer shadow-md flex flex-col justify-between">
                   <div>
                     <div className="flex justify-between items-start mb-4">
                       <h4 className="font-bold text-foreground text-lg">{sem.name}</h4>
-                      <div className={`bg-secondary px-2.5 py-1 rounded-md font-bold text-sm border border-border ${getGPATextColorClass(sem.gpa, false)}`}>
+                      <div className={`px-2.5 py-1 rounded-md font-bold text-sm border ${getGPABadgeClass(sem.gpa, false)}`}>
                         {sem.gpa.toFixed(2)}
                       </div>
                     </div>

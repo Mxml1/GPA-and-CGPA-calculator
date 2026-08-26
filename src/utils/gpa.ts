@@ -88,4 +88,18 @@ export const getGPATextColorClass = (gpa: number, isResting: boolean) => {
     return 'text-red-600 dark:text-red-400';
   }
 };
- 
+
+export const getGPABadgeClass = (gpa: number, isResting: boolean) => {
+  if (isResting) {
+    return 'bg-muted text-muted-foreground border-border';
+  }
+  if (gpa >= 3.5) {
+    return 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-emerald-500/30';
+  } else if (gpa >= 3.0) {
+    return 'bg-blue-500/15 text-blue-600 dark:text-blue-400 border-blue-500/30';
+  } else if (gpa >= 2.0) {
+    return 'bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/30';
+  } else {
+    return 'bg-red-500/15 text-red-600 dark:text-red-400 border-red-500/30';
+  }
+};
