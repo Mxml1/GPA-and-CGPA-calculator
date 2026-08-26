@@ -116,16 +116,16 @@ export const Dashboard = () => {
           {semesters.length > 0 ? (
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={chartData} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#333" vertical={false} />
-                <XAxis dataKey="name" stroke="#888" tickLine={false} axisLine={false} />
-                <YAxis domain={['auto', 'auto']} stroke="#888" tickLine={false} axisLine={false} />
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false}/>
+                <XAxis dataKey="name" stroke="hsl(var(--muted-foreground)) "tickLine={false} axisLine={false}/>
+                <YAxis domain={['auto', 'auto']} stroke="hsl(var(--muted-foreground))" tickLine={false} axisLine={false}/>
                 <Tooltip 
                   contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))', borderRadius: '8px' }}
                   itemStyle={{ color: 'hsl(var(--foreground))' }}
                 />
-                <Line type="monotone" dataKey="cgpa" stroke="#8b5cf6" strokeWidth={3} dot={{ r: 4, fill: '#8b5cf6' }} activeDot={{ r: 6 }} name="CGPA" />
-                <Line type="monotone" dataKey="gpa" stroke="#6b7280" strokeWidth={2} strokeDasharray="5 5" dot={false} name="Semester GPA" />
-              </LineChart>
+                <Line type="monotone" dataKey="cgpa" stroke="hsl(var(--primary))" strokeWidth={3} dot={{ r: 4, fill: 'hsl(var(--primary))' }} activeDot={{ r: 6 }} name="CGPA"/>
+                <Line type="monotone" dataKey="gpa" stroke="hsl(var(--muted-foreground))" strokeWidth={2} strokeDasharray="5 5" dot={false} name="Semester GPA"/>
+                </LineChart>
             </ResponsiveContainer>
           ) : (
             <div className="h-full w-full flex flex-col items-center justify-center text-muted-foreground bg-black/20 rounded-xl border border-dashed border-border/30">

@@ -6,7 +6,7 @@ import type { Subject } from '../store/useStore';
 import { calculateSubjectPoints, calculateGPA, getGPAColorClass } from '../utils/gpa';
 import { exportSemesterToPDF } from '../utils/export';
 import { useLocalStorage } from '../hooks/useLocalStorage';
-import { ContributionBars } from './ContributionBars';
+import { ContributionBars } from './ContributionBars_and_PieCharts';
 import { trackEvent } from '../lib/analytics';
 import {
   Select,
