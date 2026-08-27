@@ -150,30 +150,33 @@ export const Dashboard = () => {
              <p className="text-muted-foreground">You haven't saved any semesters yet.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
               {sortedSemesters.map(sem => (
-                <div key={sem.id} className="bg-card border border-border/50 rounded-xl p-4 hover:border-primary/50 transition-colors group shadow-md">
-                  <div className="flex justify-between items-start gap-3 mb-2">
-                    <h4 className="font-bold text-foreground text-lg leading-tight">{sem.name}</h4>
-                    <div className={`shrink-0 px-2.5 py-1 rounded-md font-bold text-sm border ${getGPABadgeClass(sem.gpa, false)}`}>
+                <div
+                  key={sem.id}
+                  className="rounded-lg border border-border/70 bg-card p-3.5 shadow-sm transition-all hover:border-primary/50 dark:bg-secondary/90 dark:border-border dark:shadow-[0_0_0_1px_hsl(var(--border)),0_4px_12px_rgba(0,0,0,0.35)] dark:hover:border-primary/45 dark:hover:bg-secondary"
+                >
+                  <div className="flex justify-between items-start gap-2 mb-2">
+                    <h4 className="font-semibold text-foreground text-base leading-snug">{sem.name}</h4>
+                    <div className={`shrink-0 px-2 py-0.5 rounded-md font-bold text-xs border ${getGPABadgeClass(sem.gpa, false)}`}>
                       {sem.gpa.toFixed(2)}
                     </div>
                   </div>
-                  <div className="text-sm text-muted-foreground flex items-center justify-between mb-3">
+                  <div className="text-xs text-muted-foreground flex items-center justify-between mb-2.5">
                     <span>{sem.subjects.length} courses</span>
                     <span>{sem.subjects.reduce((sum, s) => sum + s.credits, 0)} credits</span>
                   </div>
                   
-                  <div className="flex space-x-2 pt-3 border-t border-border/40 justify-end">
+                  <div className="flex space-x-1.5 pt-2 border-t border-border/50 dark:border-border/80 justify-end">
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
                         handleEdit(sem);
                       }}
-                      className="p-1.5 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded transition-colors"
+                      className="p-1 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded transition-colors"
                       title="Edit Semester"
                     >
-                      <Pencil size={15} />
+                      <Pencil size={14} />
                     </button>
                     <button
                       onClick={(e) => {
@@ -186,10 +189,10 @@ export const Dashboard = () => {
                           });
                         }
                       }}
-                      className="p-1.5 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded transition-colors"
+                      className="p-1 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded transition-colors"
                       title="Delete Semester"
                     >
-                      <Trash2 size={15} />
+                      <Trash2 size={14} />
                     </button>
                   </div>
                 </div>
