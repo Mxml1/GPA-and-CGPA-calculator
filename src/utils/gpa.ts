@@ -31,6 +31,32 @@ export const calculateGPA = (subjects: Subject[]): number => {
   return totalCredits === 0 ? 0 : Number((totalPoints / totalCredits).toFixed(2));
 };
 
+export const getSemesterKey = (name: string): string => {
+  const clean = name.trim().toLowerCase().replace(/\s+/g, ' ');
+  const yearMatch = clean.match(/\d{4}/);
+  const year = yearMatch ? yearMatch[0] : '';
+
+  let term = '';
+  if (clean.includes('spring')) term = 'spring';
+  else if (clean.includes('summer')) term = 'summer';
+  else if (clean.includes('fall')) term = 'fall';
+  else if (clean.includes('winter')) term = 'winter';
+
+  if (term && year) return `${term}-${year}`;
+  return clean;
+};
+
+export const isDuplicateSemesterName = (
+  semesters: Semester[],
+  name: string,
+  excludeId?: string | null
+): boolean => {
+  const key = getSemesterKey(name);
+  return semesters.some(
+    (semester) => semester.id !== excludeId && getSemesterKey(semester.name) === key
+  );
+};
+
 export const calculateCGPA = (semesters: Semester[]): number => {
   let totalCredits = 0;
   let totalPoints = 0;

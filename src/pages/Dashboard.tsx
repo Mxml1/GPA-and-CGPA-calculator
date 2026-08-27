@@ -152,21 +152,19 @@ export const Dashboard = () => {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {sortedSemesters.map(sem => (
-                <div key={sem.id} className="bg-card border border-border/50 rounded-xl p-5 hover:border-primary/50 transition-colors group cursor-pointer shadow-md flex flex-col justify-between">
-                  <div>
-                    <div className="flex justify-between items-start mb-4">
-                      <h4 className="font-bold text-foreground text-lg">{sem.name}</h4>
-                      <div className={`px-2.5 py-1 rounded-md font-bold text-sm border ${getGPABadgeClass(sem.gpa, false)}`}>
-                        {sem.gpa.toFixed(2)}
-                      </div>
-                    </div>
-                    <div className="text-sm text-muted-foreground flex items-center justify-between">
-                      <span>{sem.subjects.length} courses</span>
-                      <span>{sem.subjects.reduce((sum, s) => sum + s.credits, 0)} credits</span>
+                <div key={sem.id} className="bg-card border border-border/50 rounded-xl p-4 hover:border-primary/50 transition-colors group shadow-md">
+                  <div className="flex justify-between items-start gap-3 mb-2">
+                    <h4 className="font-bold text-foreground text-lg leading-tight">{sem.name}</h4>
+                    <div className={`shrink-0 px-2.5 py-1 rounded-md font-bold text-sm border ${getGPABadgeClass(sem.gpa, false)}`}>
+                      {sem.gpa.toFixed(2)}
                     </div>
                   </div>
+                  <div className="text-sm text-muted-foreground flex items-center justify-between mb-3">
+                    <span>{sem.subjects.length} courses</span>
+                    <span>{sem.subjects.reduce((sum, s) => sum + s.credits, 0)} credits</span>
+                  </div>
                   
-                  <div className="flex space-x-2 mt-4 pt-4 border-t border-border/40 justify-end">
+                  <div className="flex space-x-2 pt-3 border-t border-border/40 justify-end">
                     <button
                       onClick={(e) => {
                         e.stopPropagation();

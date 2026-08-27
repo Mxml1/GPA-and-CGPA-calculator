@@ -3,7 +3,7 @@ import type { CSSProperties } from 'react';
 import { Plus, Trash2, Save, Download } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import type { Subject } from '../store/useStore';
-import { calculateSubjectPoints, calculateGPA, getGPAColorClass } from '../utils/gpa';
+import { calculateSubjectPoints, calculateGPA, getGPAColorClass, isDuplicateSemesterName } from '../utils/gpa';
 import { exportSemesterToPDF } from '../utils/export';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import { ContributionBars } from './ContributionBars_and_PieCharts';
@@ -17,7 +17,7 @@ import {
 } from './ui/select';
 
 export const Calculator = ({ initialScaleId }: { initialScaleId?: string }) => {
-  const { scales, user, addSemester, updateSemester } = useStore();
+  const { scales, user, semesters, addSemester, updateSemester } = useStore();
   const [semesterName, setSemesterName] = useLocalStorage('draft-semester-name', '');
   const [studentName, setStudentName] = useLocalStorage('draft-student-name', '');
   const [editingSemesterId, setEditingSemesterId] = useLocalStorage<string | null>('editing-semester-id', null);
@@ -31,6 +31,11 @@ export const Calculator = ({ initialScaleId }: { initialScaleId?: string }) => {
     if (!semesterName) {
       trackEvent('semester_save_blocked', { reason: 'missing_semester_name' });
       alert("Please enter a name for this semester (e.g., 'Fall 2025').");
+      return;
+    }
+    if (isDuplicateSemesterName(semesters, semesterName, editingSemesterId)) {
+      trackEvent('semester_save_blocked', { reason: 'duplicate_semester' });
+      alert("A semester with this term and year already exists. Please choose a different combination.");
       return;
     }
     const currentGPA = calculateGPA(subjects);
