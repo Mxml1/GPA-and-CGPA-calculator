@@ -151,15 +151,15 @@ export const ContributionBars: React.FC<ContributionBarsProps> = ({ subjects }) 
     : 0;
 
   const renderPieChart = (mode: 'max' | 'actual') => {
-    const size = 320;
+    const size = 280;
     const center = size / 2;
-    const outerRadius = 132;
-    const innerRadius = 82;
+    const outerRadius = 115;
+    const innerRadius = 72;
 
     let currentAngle = 0;
 
     return (
-      <div className="relative mx-auto w-full max-w-[320px] aspect-square">
+      <div className="relative mx-auto w-full max-w-[280px] aspect-square">
         <svg
           viewBox={`0 0 ${size} ${size}`}
           className="h-full w-full overflow-visible"
