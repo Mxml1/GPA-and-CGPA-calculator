@@ -143,6 +143,25 @@ function App() {
             } />
           </Routes>
         </main>
+        
+        {/* Footer Credit */}
+        <footer className="border-t border-border/40 py-6 bg-card/20 backdrop-blur-sm mt-auto">
+          <div className="container mx-auto px-4 text-center text-sm text-muted-foreground flex flex-col items-center justify-center gap-1.5">
+            <p className="flex items-center justify-center gap-1">
+              Developed with <span className="text-red-500">❤️</span> by{' '}
+              <button 
+                type="button"
+                onClick={() => window.open("https://www.linkedin.com/in/muzammil-khan-071659376/?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base_contact_details%3BBeqp5cacSaiTcbAMvj%2BCWg%3D%3D", "_blank", "noopener,noreferrer")} 
+                className="font-semibold text-foreground hover:text-primary no-underline transition-colors cursor-pointer"
+              >
+                Muzammil Khan
+              </button>
+            </p>
+            <p className="text-xs text-muted-foreground/70">
+              © {new Date().getFullYear()} UniGrade. All rights reserved.
+            </p>
+          </div>
+        </footer>
       </div>
     </HashRouter>
   );
